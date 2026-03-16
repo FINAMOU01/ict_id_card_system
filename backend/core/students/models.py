@@ -36,7 +36,6 @@ class Staff(models.Model):
     phone_number = models.CharField(max_length=30, blank=True, null=True)
     photo = models.ImageField(upload_to='staff/')
     date_of_birth = models.DateField(blank=True, null=True)
-    qr_code = models.ImageField(upload_to='staff_qrcodes/', blank=True, null=True)
     confirmed = models.BooleanField(default=False)
     issued_year = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

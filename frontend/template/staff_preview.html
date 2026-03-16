@@ -12,26 +12,20 @@
 
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0694a2 0%, #047481 50%, #065f46 100%);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
             min-height: 100vh;
             padding: 30px 20px;
         }
-
         body.pdf-mode { background: white; padding: 0; }
 
         .preview-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
+            max-width: 1000px; margin: 0 auto;
+            background: white; border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,.15);
             padding: 50px 40px;
             animation: slideUp .6s ease-out;
         }
-
-        .preview-container.pdf-mode {
-            max-width: none; box-shadow: none; padding: 0; border-radius: 0;
-        }
+        .preview-container.pdf-mode { max-width: none; box-shadow: none; padding: 0; border-radius: 0; }
 
         @keyframes slideUp {
             from { opacity:0; transform:translateY(30px); }
@@ -39,34 +33,23 @@
         }
 
         h1 {
-            text-align: center;
-            font-size: 2.4em;
-            font-weight: 700;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #0694a2, #065f46);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-align: center; font-size: 2.4em; font-weight: 700; margin-bottom: 6px;
+            background: linear-gradient(135deg, #f97316, #c2410c);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-
-        .preview-subtitle {
-            text-align: center; color: #4a5568; font-size: 1.05em; margin-bottom: 45px; font-weight: 500;
-        }
+        .preview-subtitle { text-align: center; color: #4a5568; font-size: 1.05em; margin-bottom: 45px; font-weight: 500; }
 
         /* ══════════════ STAFF ID CARD ══════════════ */
-        .card-display-wrapper {
-            display: flex; justify-content: center; margin-bottom: 45px; perspective: 1000px;
-        }
+        .card-display-wrapper { display: flex; justify-content: center; margin-bottom: 45px; perspective: 1000px; }
 
         .id-card {
             width: 600px;
             aspect-ratio: 85 / 54;
-            background: linear-gradient(160deg, #e6f7f8 0%, #f0faf9 50%, #e8f5f0 100%);
-            border: 4px solid #0694a2;
+            background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 50%, #fef3c7 100%);
+            border: 4px solid #f97316;
             border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 15px 40px rgba(6,148,162,.3);
+            display: flex; flex-direction: column;
+            box-shadow: 0 15px 40px rgba(249,115,22,.3);
             overflow: hidden;
             transition: transform .4s ease, box-shadow .4s ease;
             transform-style: preserve-3d;
@@ -75,175 +58,127 @@
 
         .id-card::before {
             content: '';
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%,-50%);
             width: 340px; height: 340px;
             background-image: url('{% static "images/logo.png" %}');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 0;
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            opacity: 0.05; pointer-events: none; z-index: 0;
         }
 
         .id-card:hover {
             transform: translateY(-8px) rotateX(5deg) rotateY(-5deg);
-            box-shadow: 0 30px 60px rgba(6,148,162,.4);
+            box-shadow: 0 30px 60px rgba(249,115,22,.45);
         }
 
-        /* Header bar – teal */
         .card-header {
-            background: linear-gradient(90deg, #0694a2 0%, #047481 50%, #065f46 100%);
+            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
             padding: 12px 14px 9px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
             border-radius: 16px 16px 0 0;
-            position: relative; z-index: 2;
-            flex-shrink: 0;
+            position: relative; z-index: 2; flex-shrink: 0;
         }
 
         .logo { width: 44px; height: 44px; flex-shrink: 0; }
+        .card-title-wrapper { display: flex; flex-direction: column; gap: 2px; }
+        .card-title    { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: .4px; white-space: nowrap; }
+        .card-subtitle { color: #fed7aa; font-size: 10px; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
 
-        .card-title-wrapper { display: flex; flex-direction: column; gap: 1px; }
-        .card-title  { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: .4px; white-space: nowrap; }
-        .card-subtitle { color: #6ee7b7; font-size: 10px; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-
-        /* Body */
         .card-body {
-            display: flex;
-            flex: 1;
-            padding: 14px 18px;
-            gap: 16px;
+            display: flex; flex: 1;
+            padding: 14px 18px; gap: 16px;
             align-items: flex-start;
             position: relative; z-index: 1;
         }
 
-        /* Info – left */
-        .card-info {
-            flex: 1;
-            display: flex; flex-direction: column; gap: 5px;
-        }
+        .card-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
 
         .staff-name {
-            font-size: 18px; font-weight: 800; color: #065f46;
-            text-transform: uppercase; line-height: 1.2; margin-bottom: 4px;
+            font-size: 18px; font-weight: 800; color: #c2410c;
+            text-transform: uppercase; line-height: 1.2; margin-bottom: 2px;
         }
 
-        .card-field {
-            font-size: 11.5px; color: #2d3748; line-height: 1.3;
+        .role-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f97316, #c2410c);
+            color: white; font-size: 9px; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px; letter-spacing: .5px;
+            margin-bottom: 5px; text-transform: uppercase;
         }
+
+        .card-field { font-size: 11.5px; color: #2d3748; line-height: 1.35; }
         .card-field label {
-            color: #718096; font-weight: 700; font-size: 10px;
+            color: #9a3412; font-weight: 700; font-size: 10px;
             text-transform: uppercase; letter-spacing: .3px; margin-right: 4px;
         }
 
-        /* Role badge */
-        .role-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #0694a2, #065f46);
-            color: white; font-size: 9px; font-weight: 700;
-            padding: 3px 10px; border-radius: 20px; letter-spacing: .5px;
-            margin-bottom: 6px; text-transform: uppercase;
-        }
-
-        /* Photo – right */
-        .card-photo-section {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-        }
+        .card-photo-section { display: flex; flex-direction: column; align-items: center; }
 
         .student-photo {
-            width: 90px; height: 110px;
+            width: 100px; height: 120px;
             object-fit: cover;
-            border: 3px solid #0694a2;
+            border: 3px solid #f97316;
             border-radius: 6px;
         }
 
-        /* Bottom strip */
         .card-bottom-section {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 14px 4px;
+            display: flex; align-items: center; justify-content: flex-start;
+            padding: 4px 14px 5px;
             position: relative; z-index: 1;
         }
+        .vc-text { font-size: 8px; font-weight: 700; color: #9a3412; letter-spacing: .5px; text-transform: uppercase; }
 
-        .vc-text {
-            font-size: 8px; font-weight: 700; color: #718096;
-            letter-spacing: .5px; text-transform: uppercase;
-        }
-
-        .qr-container {}
-        .qr-code { width: 48px; height: 48px; border: 2px solid #0694a2; border-radius: 4px; }
-
-        /* Footer */
         .card-footer {
-            background: linear-gradient(90deg, #0694a2, #065f46);
-            color: white;
-            font-size: 10px; font-weight: 700; letter-spacing: .5px;
+            background: linear-gradient(90deg, #c2410c, #f97316);
+            color: white; font-size: 10px; font-weight: 700;
             text-align: center; padding: 5px;
-            border-radius: 0 0 16px 16px;
-            flex-shrink: 0;
+            border-radius: 0 0 16px 16px; flex-shrink: 0; letter-spacing: .5px;
         }
 
-        /* ══════ Action buttons ══════ */
+        /* Buttons */
         .actions-container { margin-top: 10px; }
         .buttons-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 
         .btn {
-            padding: 13px 28px;
-            border-radius: 9px;
-            font-size: 1em; font-weight: 600;
+            padding: 13px 28px; border-radius: 9px; font-size: 1em; font-weight: 600;
             text-decoration: none; color: white;
             display: inline-flex; align-items: center; gap: 8px;
             transition: all .3s; border: none; cursor: pointer;
             box-shadow: 0 6px 18px rgba(0,0,0,.12);
         }
-
-        .btn-primary { background: linear-gradient(135deg, #0694a2, #047481); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(6,148,162,.4); }
-
-        .btn-secondary { background: linear-gradient(135deg, #065f46, #064e3b); }
-        .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(6,95,70,.4); }
-
-        .btn-success { background: linear-gradient(135deg, #38a169, #276749); }
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56,161,105,.4); }
+        .btn-primary   { background: linear-gradient(135deg, #f97316, #c2410c); }
+        .btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(249,115,22,.45); }
+        .btn-secondary { background: linear-gradient(135deg, #92400e, #78350f); }
+        .btn-secondary:hover { transform: translateY(-2px); }
+        .btn-success   { background: linear-gradient(135deg, #38a169, #276749); }
+        .btn-success:hover   { transform: translateY(-2px); }
 
         .info-section {
             margin-top: 35px; padding: 25px 30px;
-            background: linear-gradient(135deg,rgba(6,148,162,.06),rgba(6,95,70,.06));
-            border-radius: 12px; border: 1px solid rgba(6,148,162,.15);
+            background: linear-gradient(135deg,rgba(249,115,22,.06),rgba(194,65,12,.06));
+            border-radius: 12px; border: 1px solid rgba(249,115,22,.2);
         }
-        .info-section h3 { color: #065f46; margin-bottom: 10px; font-size: 1.1em; }
-        .info-section p  { color: #4a5568; font-size: 0.95em; line-height: 1.7; }
-
-        /* PDF mode overrides */
-        @media print, (max-width: 0px) {}
+        .info-section h3 { color: #c2410c; margin-bottom: 10px; font-size: 1.1em; }
+        .info-section p  { color: #4a5568; font-size: .95em; line-height: 1.7; }
 
         .spinner-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.5); z-index: 999;
         }
         .spinner-overlay.active { display: block; }
-
         .loading-spinner {
-            display: none; position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            text-align: center; z-index: 1000;
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); text-align: center; z-index: 1000;
         }
         .loading-spinner.active { display: block; }
-
         .spinner {
             width: 50px; height: 50px;
             border: 4px solid rgba(255,255,255,.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-            margin: 0 auto 12px;
+            border-top-color: white; border-radius: 50%;
+            animation: spin .8s linear infinite; margin: 0 auto 12px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: white; font-weight: 600; font-size: 1em; }
+        .loading-text { color: white; font-weight: 600; }
 
         @media (max-width: 650px) {
             .id-card { width: 95vw; }
@@ -263,7 +198,6 @@
 
         <div class="card-display-wrapper">
             <div class="id-card">
-                <!-- Header -->
                 <div class="card-header">
                     <img src="{% static 'images/logo.png' %}" alt="ICT University Logo" class="logo">
                     <div class="card-title-wrapper">
@@ -272,51 +206,32 @@
                     </div>
                 </div>
 
-                <!-- Body -->
                 <div class="card-body">
-                    <!-- Left: Info -->
                     <div class="card-info">
                         <div class="staff-name">{{ staff.full_name }}</div>
                         <div class="role-badge"><i class="fas fa-briefcase"></i> {{ staff.job_title }}</div>
-
-                        <div class="card-field">
-                            <label>Gender:</label>{{ staff.get_gender_display }}
-                        </div>
-                        <div class="card-field">
-                            <label>Dept:</label>{{ staff.department }}
-                        </div>
+                        <div class="card-field"><label>Gender:</label>{{ staff.get_gender_display }}</div>
+                        <div class="card-field"><label>Dept:</label>{{ staff.department }}</div>
                         {% if staff.phone_number %}
-                        <div class="card-field">
-                            <label>Phone:</label>{{ staff.phone_number }}
-                        </div>
+                        <div class="card-field"><label>Phone:</label>{{ staff.phone_number }}</div>
                         {% endif %}
                         {% if staff.date_of_birth %}
-                        <div class="card-field">
-                            <label>DOB:</label>{{ staff.date_of_birth|date:"d/m/Y" }}
-                        </div>
+                        <div class="card-field"><label>DOB:</label>{{ staff.date_of_birth|date:"d/m/Y" }}</div>
                         {% endif %}
                         {% if staff.issued_year %}
-                        <div class="card-field">
-                            <label>Issued:</label>{{ staff.issued_year }}
-                        </div>
+                        <div class="card-field"><label>Issued:</label>{{ staff.issued_year }}</div>
                         {% endif %}
                     </div>
 
-                    <!-- Right: Photo -->
                     <div class="card-photo-section">
                         <img src="{{ staff.photo.url }}" alt="Staff Photo" class="student-photo">
                     </div>
                 </div>
 
-                <!-- Bottom: VC text + QR -->
                 <div class="card-bottom-section">
                     <div class="vc-text">ICT-U VICE CHANCELLOR</div>
-                    <div class="qr-container">
-                        <img src="{{ staff.qr_code.url }}" alt="QR Code" class="qr-code">
-                    </div>
                 </div>
 
-                <!-- Footer -->
                 <div class="card-footer">✓ Valid Staff ID Card</div>
             </div>
         </div>
@@ -340,8 +255,8 @@
             <h3><i class="fas fa-info-circle"></i> Card Information</h3>
             <p>
                 This ID card serves as an official identification document for ICT University staff members.
-                It contains essential employment information and a QR code for digital verification.
-                Please keep it safe and present it when required for campus access and university services.
+                It contains essential employment information. Please keep it safe and present it when
+                required for campus access and university services.
             </p>
         </div>
         {% endif %}

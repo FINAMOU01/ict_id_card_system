@@ -10,28 +10,21 @@
     <style>
         * { box-sizing: border-box; }
 
-        html, body {
-            margin: 0; padding: 0;
-            font-family: 'Helvetica', sans-serif;
-            background: #f0faf9;
-        }
-
+        html, body { margin: 0; padding: 0; font-family: 'Helvetica', sans-serif; background: #fff7ed; }
         body { padding: 20mm; }
 
-        /* ── Page header (screen only) ── */
         .page-header {
             text-align: center; margin-bottom: 35px;
-            padding-bottom: 22px; border-bottom: 3px solid #b2f5ea;
+            padding-bottom: 22px; border-bottom: 3px solid #fed7aa;
         }
-        .page-header h1 { color: #065f46; font-size: 2.3em; margin: 0 0 8px; font-weight: 700; }
+        .page-header h1 { color: #c2410c; font-size: 2.3em; margin: 0 0 8px; font-weight: 700; }
         .page-header p  { color: #718096; font-size: 1em; margin: 0; }
 
-        /* ── Controls bar ── */
+        /* Controls bar */
         .controls-bar {
             display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
-            background: linear-gradient(135deg, #0694a2, #065f46);
-            padding: 16px 22px; border-radius: 10px;
-            margin-bottom: 25px;
+            background: linear-gradient(135deg, #c2410c, #f97316);
+            padding: 16px 22px; border-radius: 10px; margin-bottom: 25px;
         }
         .controls-bar span { color: white; font-weight: 600; font-size: .95em; }
         .controls-bar input {
@@ -47,55 +40,44 @@
         }
         .ctrl-btn:hover { background: rgba(255,255,255,.3); }
 
-        /* ── Cards grid ── */
+        /* Cards grid */
         .cards-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20mm;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
+            display: grid; grid-template-columns: 1fr; gap: 20mm;
+            max-width: 900px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* ── The ID card itself ── */
+        /* The ID card */
         .id-card {
-            width: 85.6mm;
-            height: 54mm;
-            aspect-ratio: 85 / 54;
-            background: linear-gradient(160deg, #e6f7f8 0%, #f0faf9 50%, #e8f5f0 100%);
-            border: 2px solid #0694a2;
-            border-radius: 18px;
-            padding: 5px;
+            width: 85.6mm; height: 54mm; aspect-ratio: 85 / 54;
+            background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 50%, #fef3c7 100%);
+            border: 2px solid #f97316;
+            border-radius: 18px; padding: 5px;
             font-family: 'Helvetica', sans-serif;
-            position: relative;
-            display: flex; flex-direction: column;
-            box-shadow: 0 4px 10px rgba(6,148,162,.18);
+            position: relative; display: flex; flex-direction: column;
+            box-shadow: 0 4px 10px rgba(249,115,22,.2);
             overflow: hidden;
             page-break-inside: avoid; break-inside: avoid;
             transition: all .3s ease;
         }
 
-        .id-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 18px rgba(6,148,162,.28);
-        }
+        .id-card:hover { transform: translateY(-4px); box-shadow: 0 8px 18px rgba(249,115,22,.35); }
 
         /* Watermark */
         .id-card::after {
             content: '';
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%,-50%);
-            width: 320px; height: 320px;
+            width: 300px; height: 300px;
             background-image: url('{% static "images/logo.png" %}');
             background-size: contain; background-repeat: no-repeat; background-position: center;
             opacity: 0.05; pointer-events: none; z-index: 0;
         }
 
-        /* Header bar */
+        /* Header bar pseudo */
         .id-card::before {
             content: '';
             position: absolute; top: 0; left: 0; right: 0; height: 10mm;
-            background: linear-gradient(90deg, #0694a2 0%, #047481 50%, #065f46 100%);
+            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
             border-radius: 14px 14px 0 0; z-index: 2;
         }
 
@@ -106,89 +88,67 @@
         }
 
         .logo { width: 28px; height: 28px; flex-shrink: 0; }
-
         .card-title-wrapper { display: flex; flex-direction: column; gap: 1px; flex: 1; }
         .card-title    { color: white; font-size: 9px; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-        .card-subtitle { color: #6ee7b7; font-size: 6.5px; font-weight: 700; letter-spacing: .2px; white-space: nowrap; }
+        .card-subtitle { color: #fed7aa; font-size: 6.5px; font-weight: 700; letter-spacing: .2px; white-space: nowrap; }
 
         /* Body */
         .card-body {
-            display: grid; grid-template-columns: 1.4fr 1.1fr; gap: 6px;
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 6px;
             flex: 1; position: relative; z-index: 1;
             padding: 6px 9px; overflow: hidden; min-height: 0;
         }
 
-        .card-info {
-            display: flex; flex-direction: column; gap: 1px;
-            font-size: 9px; overflow: hidden; justify-content: flex-start;
-        }
+        .card-info { display: flex; flex-direction: column; gap: 1px; font-size: 9px; overflow: hidden; }
 
-        .staff-name  { font-size: 9.5px; font-weight: 800; color: #065f46; text-transform: uppercase; line-height: 1.1; }
+        .staff-name  { font-size: 9.5px; font-weight: 800; color: #c2410c; text-transform: uppercase; line-height: 1.1; }
         .role-badge-sm {
             display: inline-block;
-            background: linear-gradient(135deg, #0694a2, #065f46);
+            background: linear-gradient(135deg, #f97316, #c2410c);
             color: white; font-size: 6px; font-weight: 700;
             padding: 1px 7px; border-radius: 10px; margin: 2px 0 1px;
             text-transform: uppercase; letter-spacing: .3px;
         }
         .card-field  { font-size: 8.5px; color: #2d3748; line-height: 1.3; }
-        .field-label { color: #718096; font-weight: 700; font-size: 7.5px; text-transform: uppercase; }
+        .field-label { color: #9a3412; font-weight: 700; font-size: 7.5px; text-transform: uppercase; }
 
-        .card-photo-section {
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px;
-        }
+        .card-photo-section { display: flex; align-items: flex-start; justify-content: center; }
 
         .student-photo {
-            width: 28mm; height: 22mm; object-fit: cover;
-            border: 1.5px solid #0694a2; border-radius: 4px;
-        }
-
-        .qr-code {
-            width: 14mm; height: 14mm; object-fit: contain;
-            border: 1.5px solid #065f46; border-radius: 3px; background: white;
+            width: 26mm; height: 30mm; object-fit: cover;
+            border: 1.5px solid #f97316; border-radius: 4px;
         }
 
         .card-bottom-section {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 9px 3px; position: relative; z-index: 1;
+            display: flex; align-items: center; padding: 0 9px 3px;
+            position: relative; z-index: 1;
         }
-
-        .vc-text { font-size: 6.5px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: .4px; }
+        .vc-text { font-size: 6.5px; font-weight: 700; color: #9a3412; text-transform: uppercase; letter-spacing: .4px; }
 
         .card-footer {
-            background: linear-gradient(90deg, #0694a2, #065f46);
+            background: linear-gradient(90deg, #c2410c, #f97316);
             color: white; font-size: 7px; font-weight: 700;
             text-align: center; padding: 3px;
-            border-radius: 0 0 14px 14px; flex-shrink: 0;
-            letter-spacing: .3px;
+            border-radius: 0 0 14px 14px; flex-shrink: 0; letter-spacing: .3px;
         }
 
         /* Checkbox overlay */
         .card-select-checkbox {
             position: absolute; top: 12mm; right: 4px; z-index: 10;
-            width: 18px; height: 18px; cursor: pointer; accent-color: #065f46;
+            width: 18px; height: 18px; cursor: pointer; accent-color: #c2410c;
         }
 
-        /* No-results */
         .no-results {
             text-align: center; padding: 40px 20px;
             color: #718096; font-size: 1.1em;
-            background: #f0faf9; border-radius: 10px;
-            border: 2px dashed #0694a2;
-        }
-
-        /* Selection stats */
-        .selection-stats {
-            text-align: center; padding: 12px;
-            background: rgba(6,148,162,.08);
-            border-radius: 8px; margin-bottom: 20px;
-            color: #065f46; font-weight: 600;
+            background: #fff7ed; border-radius: 10px;
+            border: 2px dashed #f97316;
         }
 
         @media print {
             body { padding: 10mm; background: white; }
-            .page-header, .controls-bar, .selection-stats,
-            .download-area, .card-select-checkbox { display: none !important; }
+            .page-header, .controls-bar, .download-area,
+            .card-select-checkbox { display: none !important; }
         }
     </style>
 </head>
@@ -202,7 +162,6 @@
 
     <form method="post" action="{% url 'staff_bulk_preview' %}" id="bulk-form">
         {% csrf_token %}
-
         <div class="controls-bar">
             <span><i class="fas fa-users"></i>
                 <span id="selection-count">0</span> / <span id="total-count">0</span> selected
@@ -242,7 +201,6 @@
                     </div>
                     <div class="card-photo-section">
                         <img src="{{ member.photo.url }}" alt="Staff Photo" class="student-photo">
-                        <img src="{{ member.qr_code.url }}" alt="QR Code" class="qr-code">
                     </div>
                 </div>
                 <div class="card-bottom-section">
@@ -298,7 +256,6 @@
                 </div>
                 <div class="card-photo-section">
                     <img src="{{ member.photo.url }}" alt="Staff Photo" class="student-photo">
-                    <img src="{{ member.qr_code.url }}" alt="QR Code" class="qr-code">
                 </div>
             </div>
             <div class="card-bottom-section">
@@ -312,8 +269,7 @@
     {% if not is_pdf %}
     <div style="text-align:center;margin:30px;padding:20px;background:white;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);">
         <a href="{% url 'staff_bulk_pdf' %}?{% for member in staff_list %}selected_staff={{ member.id }}{% if not forloop.last %}&{% endif %}{% endfor %}"
-           class="download-btn"
-           style="background:linear-gradient(135deg,#065f46,#047481);padding:14px 28px;font-size:1.1em;border-radius:8px;text-decoration:none;color:white;display:inline-block;box-shadow:0 4px 15px rgba(6,95,70,.3);margin-right:14px;">
+           style="background:linear-gradient(135deg,#c2410c,#f97316);padding:14px 28px;font-size:1.1em;border-radius:8px;text-decoration:none;color:white;display:inline-block;box-shadow:0 4px 15px rgba(194,65,12,.3);margin-right:14px;">
             <i class="fas fa-download"></i> Download PDF
         </a>
         <a href="{% url 'staff_selection' %}" style="background:#6b7280;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;display:inline-block;">
@@ -330,19 +286,16 @@
             if (el) el.textContent = total;
             updateSelectionCount();
         }
-
         function selectAll() {
-            document.querySelectorAll('input[type="checkbox"][name="selected_staff"]').forEach(cb => cb.checked = true);
+            document.querySelectorAll('input[name="selected_staff"]').forEach(cb => cb.checked = true);
             updateSelectionCount();
         }
-
         function deselectAll() {
-            document.querySelectorAll('input[type="checkbox"][name="selected_staff"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="selected_staff"]').forEach(cb => cb.checked = false);
             updateSelectionCount();
         }
-
         function updateSelectionCount() {
-            const cbs = document.querySelectorAll('input[type="checkbox"][name="selected_staff"]');
+            const cbs = document.querySelectorAll('input[name="selected_staff"]');
             const sel = Array.from(cbs).filter(cb => cb.checked && cb.offsetParent !== null).length;
             const vis = Array.from(cbs).filter(cb => cb.offsetParent !== null).length;
             const sc = document.getElementById('selection-count');
@@ -350,7 +303,6 @@
             if (sc) sc.textContent = sel;
             if (tc) tc.textContent = vis;
         }
-
         function filterCards() {
             const q = document.getElementById('search-input')?.value.toLowerCase() || '';
             document.querySelectorAll('.id-card').forEach(card => {
@@ -358,14 +310,13 @@
             });
             updateSelectionCount();
         }
-
         document.addEventListener('DOMContentLoaded', function () {
             initializeControls();
             document.getElementById('search-input')?.addEventListener('input', filterCards);
-            document.querySelectorAll('input[type="checkbox"][name="selected_staff"]')
+            document.querySelectorAll('input[name="selected_staff"]')
                 .forEach(cb => cb.addEventListener('change', updateSelectionCount));
             document.getElementById('bulk-form')?.addEventListener('submit', function (e) {
-                const sel = document.querySelectorAll('input[type="checkbox"][name="selected_staff"]:checked');
+                const sel = document.querySelectorAll('input[name="selected_staff"]:checked');
                 if (sel.length === 0) { e.preventDefault(); alert('Please select at least one staff member.'); }
             });
         });

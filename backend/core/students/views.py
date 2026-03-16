@@ -263,11 +263,6 @@ def register_staff(request):
             photo=photo,
         )
 
-        # QR encodes name + job title since there's no matricule
-        qr_data = f"{full_name} | {job_title} | {department}"
-        buffer = _generate_qr(qr_data)
-        staff.qr_code.save(f'staff_{staff.id}_qr.png', ContentFile(buffer.getvalue()), save=True)
-
         return redirect('staff_preview', staff_id=staff.id)
 
     return render(request, 'register_staff.html')
