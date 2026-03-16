@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Registration - ICT University</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0694a2 0%, #047481 60%, #065f46 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px;
+        }
+
+        .form-wrapper {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.15);
+            padding: 45px 40px;
+            width: 100%;
+            max-width: 640px;
+            animation: slideUp .5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(25px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        .form-header { text-align: center; margin-bottom: 35px; }
+        .form-header img { width: 75px; height: auto; margin-bottom: 12px; }
+        .form-header h1 { color: #065f46; font-size: 2em; margin: 0 0 4px; }
+        .form-header p  { color: #718096; font-size: 0.95em; }
+
+        /* Staff badge strip */
+        .staff-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #0694a2, #047481);
+            color: white;
+            font-size: 0.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .error-box {
+            color: #c53030;
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 22px;
+            font-size: 0.95em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: 1 / -1; }
+
+        label { color: #2d3748; font-weight: 600; font-size: 0.9em; }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="file"],
+        select {
+            padding: 11px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: border-color .2s;
+            background: white;
+            width: 100%;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0694a2;
+        }
+
+        input[type="file"] { background: #f8fafc; }
+        small { color: #a0aec0; font-size: 0.8em; }
+
+        .submit-area { grid-column: 1 / -1; text-align: center; margin-top: 10px; }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0694a2, #047481);
+            color: white;
+            padding: 14px 44px;
+            border: none;
+            border-radius: 9px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(6,148,162,.35);
+            transition: transform .2s;
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            color: #065f46;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .form-wrapper { padding: 30px 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+        <div class="form-header">
+            <img src="{% static 'images/logo.png' %}" alt="ICT University Logo">
+            <div class="staff-badge"><i class="fas fa-id-badge"></i> STAFF</div>
+            <h1>Staff Registration</h1>
+            <p>Create a new staff ID card</p>
+        </div>
+
+        {% if error %}
+        <div class="error-box"><strong>Error:</strong> {{ error }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-grid">
+
+                <!-- Full Name -->
+                <div class="form-group full">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required placeholder="e.g. Dr. Jane Doe">
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth">
+                </div>
+
+                <!-- Job Title -->
+                <div class="form-group full">
+                    <label for="job_title">Job Title / Position</label>
+                    <input type="text" id="job_title" name="job_title" required placeholder="e.g. Senior Lecturer">
+                </div>
+
+                <!-- Department -->
+                <div class="form-group full">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" required placeholder="e.g. Computer Science">
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group full">
+                    <label for="phone_number">Phone Number <span style="color:#a0aec0;font-weight:400">(optional)</span></label>
+                    <input type="tel" id="phone_number" name="phone_number" placeholder="e.g. +237 6XX XXX XXX">
+                </div>
+
+                <!-- Photo -->
+                <div class="form-group full">
+                    <label for="photo">Staff Photo</label>
+                    <input type="file" id="photo" name="photo" accept="image/*" required>
+                    <small>Passport-style photo, JPEG or PNG, max 5 MB</small>
+                </div>
+
+                <div class="submit-area">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-id-badge"></i> Register Staff Member
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <a href="{% url 'welcome' %}" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

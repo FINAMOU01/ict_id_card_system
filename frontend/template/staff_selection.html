@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Staff for Bulk Export - ICT University</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0; padding: 20px;
+            background: linear-gradient(135deg, #e6f7f8 0%, #f0faf9 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px; margin: 0 auto;
+            background: white; padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.1);
+        }
+
+        .page-title {
+            text-align: center; margin-bottom: 30px;
+        }
+        .page-title h1 {
+            color: #065f46; font-size: 2.3em; margin: 0 0 6px;
+        }
+        .page-title p { color: #718096; margin: 0; }
+
+        .controls-bar {
+            display: flex; gap: 12px; align-items: center;
+            flex-wrap: wrap; margin-bottom: 20px;
+        }
+
+        .btn-ctrl {
+            padding: 9px 20px; border: none; border-radius: 6px;
+            cursor: pointer; font-size: 0.95em; font-weight: 600;
+            transition: all .2s;
+        }
+        .btn-ctrl-teal { background: #0694a2; color: white; }
+        .btn-ctrl-teal:hover { background: #047481; }
+        .btn-ctrl-outline {
+            background: white; color: #0694a2;
+            border: 2px solid #0694a2;
+        }
+        .btn-ctrl-outline:hover { background: #e6f7f8; }
+
+        /* Date filter */
+        .date-filter-section {
+            background: linear-gradient(135deg, #0694a2, #065f46);
+            padding: 18px 22px; border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .date-filter-title {
+            color: white; font-size: .95em; font-weight: 600;
+            margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+        }
+        .date-filter-inputs { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .date-input-wrapper { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 160px; }
+        .date-input-wrapper label { color: white; font-size: .9em; white-space: nowrap; }
+        .date-input-wrapper input {
+            padding: 8px 12px; border: none; border-radius: 4px;
+            font-size: .9em; flex: 1; min-width: 120px;
+            background: rgba(255,255,255,.9); color: #333;
+        }
+        .date-input-wrapper input:focus { outline: none; background: white; }
+        .date-filter-clear {
+            padding: 8px 16px; background: rgba(255,255,255,.2);
+            border: 1px solid rgba(255,255,255,.4); border-radius: 4px;
+            color: white; cursor: pointer; font-size: .9em; font-weight: 600;
+            white-space: nowrap; transition: all .2s;
+        }
+        .date-filter-clear:hover { background: rgba(255,255,255,.3); }
+
+        /* Staff grid */
+        .staff-container {
+            max-height: 58vh; overflow-y: auto;
+            margin-bottom: 28px; padding: 10px;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+        }
+
+        .staff-card {
+            border: 2px solid #e2e8f0; border-radius: 10px;
+            padding: 14px; background: white;
+            cursor: pointer; transition: border-color .2s, background .2s;
+        }
+        .staff-card:hover { border-color: #0694a2; background: #f0faf9; }
+        .staff-card.selected { border-color: #065f46; background: #ecfdf5; }
+
+        .staff-checkbox { display: none; }
+
+        .staff-checkbox + label {
+            display: flex; align-items: center;
+            cursor: pointer; margin-bottom: 8px;
+        }
+        .staff-checkbox + label::before {
+            content: ''; width: 20px; height: 20px;
+            border: 2px solid #d1d5db; border-radius: 4px;
+            margin-right: 10px; background: white;
+            transition: all .2s; flex-shrink: 0;
+        }
+        .staff-checkbox:checked + label::before {
+            background: #065f46; border-color: #065f46;
+        }
+
+        .staff-name { font-weight: 700; color: #065f46; margin-bottom: 4px; }
+        .staff-details { color: #4a5568; font-size: .88em; line-height: 1.5; }
+
+        .staff-badge-sm {
+            display: inline-block;
+            background: linear-gradient(135deg, #0694a2, #065f46);
+            color: white; font-size: .72em; font-weight: 700;
+            padding: 2px 10px; border-radius: 20px;
+            margin-top: 6px; letter-spacing: .4px;
+        }
+
+        .staff-reg-date {
+            display: flex; align-items: center; gap: 6px;
+            font-size: .82em; color: #0694a2; font-weight: 600;
+            padding: 5px 9px; background: rgba(6,148,162,.08);
+            border-radius: 4px; border-left: 3px solid #0694a2;
+            margin-top: 8px;
+        }
+
+        .staff-photo-thumb {
+            width: 56px; height: 56px; object-fit: cover;
+            border-radius: 6px; margin-left: 10px;
+            border: 2px solid #0694a2;
+        }
+
+        /* Actions */
+        .actions { text-align: center; margin-top: 20px; }
+        .btn {
+            padding: 12px 28px; border: none; border-radius: 7px;
+            font-size: 1.05em; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            margin: 0 8px; transition: transform .2s; color: white; font-weight: 600;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(135deg, #0694a2, #065f46); }
+        .btn-secondary { background: #6b7280; }
+
+        .no-staff { text-align: center; color: #6b7280; font-size: 1.1em; margin: 50px 0; }
+
+        @media (max-width: 700px) {
+            .container { padding: 20px; }
+            .staff-grid { grid-template-columns: 1fr; }
+            .btn { width: 100%; justify-content: center; margin: 6px 0; }
+            .date-filter-inputs { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-title">
+            <h1><i class="fas fa-id-badge"></i> Select Staff for Bulk Export</h1>
+            <p>Choose staff members whose ID cards you want to generate</p>
+        </div>
+
+        {% if staff_list %}
+        <form method="post" action="{% url 'staff_bulk_preview' %}" class="selection-form" id="selection-form">
+            {% csrf_token %}
+
+            <div class="controls-bar">
+                <button type="button" class="btn-ctrl btn-ctrl-teal" onclick="toggleAll()">
+                    <i class="fas fa-check-square"></i> Select / Deselect All
+                </button>
+            </div>
+
+            <!-- Date filter -->
+            <div class="date-filter-section">
+                <div class="date-filter-title"><i class="fas fa-filter"></i> Filter by Registration Date</div>
+                <div class="date-filter-inputs">
+                    <div class="date-input-wrapper">
+                        <label for="date-from">From:</label>
+                        <input type="date" id="date-from">
+                    </div>
+                    <div class="date-input-wrapper">
+                        <label for="date-to">To:</label>
+                        <input type="date" id="date-to">
+                    </div>
+                    <button type="button" class="date-filter-clear" onclick="clearDateFilter()">
+                        <i class="fas fa-redo"></i> Clear Filter
+                    </button>
+                </div>
+            </div>
+
+            <div class="staff-container">
+                <div class="staff-grid">
+                    {% for member in staff_list %}
+                    <div class="staff-card" onclick="toggleCard(this)" data-registration-date="{{ member.created_at|date:'Y-m-d' }}">
+                        <input type="checkbox" name="selected_staff" value="{{ member.id }}"
+                               id="staff_{{ member.id }}" class="staff-checkbox">
+                        <label for="staff_{{ member.id }}">
+                            <div style="flex:1">
+                                <div class="staff-name">{{ member.full_name }}</div>
+                                <div class="staff-details">
+                                    {{ member.job_title }}<br>
+                                    Dept: {{ member.department }}<br>
+                                    Gender: {{ member.get_gender_display }}
+                                    {% if member.phone_number %}<br>Phone: {{ member.phone_number }}{% endif %}
+                                </div>
+                                <span class="staff-badge-sm">STAFF</span>
+                                <div class="staff-reg-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Registered: {{ member.created_at|date:"d/m/Y \a\t H:i" }}
+                                </div>
+                            </div>
+                            <img src="{{ member.photo.url }}" alt="Photo" class="staff-photo-thumb">
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> Preview Selected Cards
+                </button>
+                <a href="{% url 'welcome' %}" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </form>
+
+        {% else %}
+        <div class="no-staff">
+            <i class="fas fa-users" style="font-size:3em;opacity:.3;display:block;margin-bottom:15px;"></i>
+            <p>No staff members registered yet.</p>
+            <a href="{% url 'register_staff' %}" class="btn btn-primary" style="margin-top:20px;">
+                <i class="fas fa-plus"></i> Register First Staff Member
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleCard(card) {
+            const checkbox = card.querySelector('.staff-checkbox');
+            checkbox.checked = !checkbox.checked;
+            card.classList.toggle('selected', checkbox.checked);
+        }
+
+        function toggleAll() {
+            const checkboxes = document.querySelectorAll('.staff-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                cb.closest('.staff-card').classList.toggle('selected', cb.checked);
+            });
+        }
+
+        function filterByDate() {
+            const from = document.getElementById('date-from').value;
+            const to   = document.getElementById('date-to').value;
+            document.querySelectorAll('.staff-card').forEach(card => {
+                const d = card.getAttribute('data-registration-date');
+                const show = (!from || d >= from) && (!to || d <= to);
+                card.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        function clearDateFilter() {
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            document.querySelectorAll('.staff-card').forEach(c => c.style.display = 'block');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('date-from')?.addEventListener('change', filterByDate);
+            document.getElementById('date-to')?.addEventListener('change', filterByDate);
+
+            document.getElementById('selection-form')?.addEventListener('submit', function (e) {
+                const checked = document.querySelectorAll('.staff-checkbox:checked');
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one staff member.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
