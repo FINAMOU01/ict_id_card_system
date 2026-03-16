@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card Preview - ICT University</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="{% static 'js/script.js' %}"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* PDF Mode - No background, compact */
+        body.pdf-mode {
+            background: white;
+            padding: 0;
+        }
+
+        .preview-container {
+            max-width: 1050px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 50px 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        /* PDF Mode - No container styling */
+        .preview-container.pdf-mode {
+            max-width: none;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a365d;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .preview-subtitle {
+            text-align: center;
+            color: #4a5568;
+            font-size: 1.1em;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        .card-display-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+            perspective: 1000px;
+        }
+
+        /* ======== MAIN ID CARD ======== */
+        .id-card {
+            width: 600px;
+            aspect-ratio: 85 / 54;
+            background-color: #f4efe8;
+            box-sizing: border-box;
+            border: 4px solid #1a365d;
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 40px rgba(26, 54, 93, 0.25);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        /* PDF Mode - Compact card */
+        .id-card.pdf-mode {
+            width: 320px;
+            height: 200px;
+            border: 2px solid #1a365d;
+            border-radius: 8px;
+            box-shadow: none;
+            overflow: visible;
+            flex-direction: column;
+        }
+
+        .id-card:hover {
+            transform: translateY(-8px) rotateX(5deg) rotateY(-5deg);
+            box-shadow: 0 30px 60px rgba(26, 54, 93, 0.4), 0 0 40px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Watermark - subtle background logo */
+        .id-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            background-image: url('{% static "images/logo.png" %}');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ======== HEADER SECTION ======== */
+        .card-header {
+            width: 100%;
+            background: linear-gradient(90deg, #1a365d 0%, #2d3748 50%, #1a365d 100%);
+            padding: 12px 12px 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        /* PDF Mode - Compact header */
+        .card-header.pdf-mode {
+            padding: 4px 6px;
+            gap: 4px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        /* PDF Mode - Small logo */
+        .logo.pdf-mode {
+            width: 20px;
+            height: 20px;
+            margin-right: 3px;
+        }
+
+        .card-title-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            justify-content: center;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .card-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 0.4px;
+            text-align: left;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .card-subtitle {
+            color: #ea580c;
+            font-size: 11px;
+            margin: 0;
+            font-weight: 600;
+            text-align: left;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        /* ======== MAIN CONTENT AREA ======== */
+        .card-body {
+            display: flex;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            padding: 15px 20px;
+            gap: 0px;
+            align-items: flex-start;
+        }
+
+        /* LEFT SIDE - STUDENT INFO */
+        .card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 150px;
+            padding-right: 5px;
+            overflow: visible;
+        }
+
+        .student-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a365d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+            line-height: 1.2;
+            word-wrap: break-word;
+            overflow: visible;
+        }
+
+        .card-field {
+            font-size: 11px;
+            color: #2d3748;
+            line-height: 1.2;
+            font-weight: 700;
+            display: flex;
+            gap: 4px;
+            align-items: baseline;
+        }
+
+        .card-field strong {
+            color: #1a365d;
+            font-weight: 700;
+            min-width: fit-content;
+        }
+
+        .card-field label {
+            color: #4a5568;
+            font-weight: 600;
+            min-width: 45px;
+            flex-shrink: 0;
+        }
+
+        .card-field span {
+            color: #2d3748;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .matricule {
+            display: inline-block;
+            color: #c2410c;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 2px;
+            border: 2px solid #c2410c;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* RIGHT SIDE - PHOTO & QR */
+        .card-photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .student-photo {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border: 1.5px solid #1a365d;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(26, 54, 93, 0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .student-photo:hover {
+            transform: scale(1.02);
+        }
+
+        .qr-code {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border: 2px solid #ea580c;
+            border-radius: 6px;
+            background: white;
+            padding: 1px;
+            box-shadow: 0 2px 4px rgba(234, 88, 12, 0.15);
+            display: block;
+            margin: 3px auto 3px auto;
+        }
+
+        .card-bottom-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            width: 100%;
+            position: relative;
+        }
+
+        .vc-text {
+            font-size: 9px;
+            color: #1a365d;
+            font-weight: bold;
+            border-bottom: 1px solid #1a365d;
+            padding-bottom: 2px;
+            white-space: nowrap;
+            position: absolute;
+            left: 0;
+            bottom: 2px;
+        }
+
+        .qr-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* ======== FOOTER SECTION ======== */
+        .card-footer {
+            width: 100%;
+            text-align: center;
+            padding: 6px 8px;
+            color: #ea580c;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 2;
+            background: rgba(244, 239, 232, 0.7);
+            border-top: 1px solid rgba(26, 54, 93, 0.15);
+            flex-shrink: 0;
+        }
+
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            font-size: 1em;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(26, 54, 93, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.4);
+        }
+
+        .buttons-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* ======== LOADING SPINNER ======== */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            text-align: center;
+        }
+
+        .loading-spinner.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            display: none;
+            animation: fadeInOverlay 0.3s ease-in;
+        }
+
+        .spinner-overlay.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #667eea;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ======== TOAST NOTIFICATION ======== */
+        .toast-container {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.4s ease-out;
+            pointer-events: all;
+            min-width: 320px;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast-icon {
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            color: #10b981;
+        }
+
+        .toast.error .toast-icon {
+            color: #ef4444;
+        }
+
+        .toast-message {
+            color: #2d3748;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0;
+            transition: color 0.2s ease;
+        }
+
+        .toast-close:hover {
+            color: #2d3748;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        .toast.remove {
+            animation: slideOutRight 0.4s ease-out forwards;
+        }
+
+        /* ======== COPY BUTTON STYLE ======== */
+        .btn-copy {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .info-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.25);
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-section:hover {
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+        }
+
+        .info-section h3 {
+            color: #1a365d;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-text {
+            color: #4a5568;
+            font-size: 0.95em;
+            line-height: 1.8;
+            letter-spacing: 0.3px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .preview-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .id-card {
+                width: 100%;
+                aspect-ratio: 85 / 54;
+            }
+
+            .card-body {
+                flex-direction: column;
+                padding: 20px;
+                gap: 25px;
+            }
+
+            .buttons-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .toast-container {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+            }
+
+            .toast {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .card-info {
+                min-width: unset;
+            }
+
+            .card-photo-section {
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+                width: 100%;
+            }
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            body {
+                padding: 5mm !important;
+                margin: 0 !important;
+            }
+
+            h1, .actions-container, .info-section {
+                display: none !important;
+            }
+
+            .preview-container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+                width: 100%;
+                background: white;
+            }
+
+            .card-display-wrapper {
+                display: flex;
+                justify-content: center;
+                margin: 0;
+                padding: 0;
+            }
+
+            .id-card {
+                width: 88.8mm !important;
+                height: 57mm !important;
+                aspect-ratio: 85.6 / 53.98 !important;
+                box-shadow: none !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                display: flex !important;
+                flex-direction: column !important;
+                border: 1px solid #1a365d !important;
+                position: relative !important;
+                background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+            }
+
+            .card-header {
+                width: 100% !important;
+                height: 10mm !important;
+                padding: 0.5mm 1mm !important;
+                margin: 0 !important;
+                gap: 1mm !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                background: #1a365d !important;
+                flex-shrink: 0 !important;
+                position: relative !important;
+                z-index: 3 !important;
+            }
+
+            .logo {
+                width: 8mm !important;
+                height: 8mm !important;
+                margin: 0 !important;
+                flex-shrink: 0 !important;
+                object-fit: contain !important;
+            }
+
+            .card-title {
+                color: #ffffff !important;
+                font-size: 3mm !important;
+                font-weight: bold !important;
+                margin: 0 !important;
+                letter-spacing: 0.1mm !important;
+                line-height: 1 !important;
+            }
+
+            .card-subtitle {
+                color: #ea580c !important;
+                font-size: 1.5mm !important;
+                margin: 0 !important;
+                font-weight: 600 !important;
+                line-height: 1 !important;
+            }
+
+            .card-body {
+                display: flex !important;
+                flex-direction: row !important;
+                flex: 1 !important;
+                padding: 1.5mm !important;
+                gap: 1.5mm !important;
+                align-items: stretch !important;
+                justify-content: space-between !important;
+                overflow: hidden !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                position: relative !important;
+                z-index: 1 !important;
+            }
+
+            .card-info {
+                flex: 1 !important;
+                padding: 0 !important;
+                gap: 0.2mm !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+            }
+
+            .card-field {
+                font-size: 2.5mm !important;
+                margin: 0 !important;
+                color: #2d3748 !important;
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 0.3mm !important;
+                align-items: baseline !important;
+                overflow: visible !important;
+                white-space: nowrap !important;
+            }
+
+            .card-field label {
+                color: #475569 !important;
+                font-weight: 600 !important;
+            }
+
+            .card-field strong {
+                color: #1a365d !important;
+            }
+
+            .card-field span {
+                color: #2d3748 !important;
+            }
+
+            .matricule {
+                color: #ea580c !important;
+                font-weight: bold !important;
+                font-size: 2.5mm !important;
+                border: none !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                display: inline !important;
+                margin: 0 !important;
+            }
+
+            .student-name {
+                font-size: 3mm !important;
+                font-weight: bold !important;
+                color: #1a365d !important;
+                line-height: 1.2 !important;
+                text-transform: uppercase !important;
+                margin-bottom: 0.3mm !important;
+                overflow: visible !important;
+                white-space: normal !important;
+            }
+
+            .card-photo-section {
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
+                flex: 0 0 auto !important;
+                gap: 1mm !important;
+                width: 22mm !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .student-photo {
+                width: 20mm !important;
+                height: 25mm !important;
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
+                object-fit: cover !important;
+                border: 0.5px solid #1a365d !important;
+                border-radius: 1mm !important;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+                margin: 0 !important;
+            }
+
+            .qr-code {
+                width: 12mm !important;
+                height: 12mm !important;
+                object-fit: contain !important;
+                border: 0.5px solid #ea580c !important;
+                border-radius: 0.5mm !important;
+                padding: 0.3mm !important;
+                background: white !important;
+                flex-shrink: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card-bottom-section {
+                display: block !important;
+                position: relative !important;
+                padding: 1mm 2mm !important;
+                width: 100% !important;
+                min-height: 15mm !important;
+            }
+
+            .vc-text {
+                font-size: 1.5mm !important;
+                color: #1a365d !important;
+                font-weight: bold !important;
+                border-bottom: 0.5px solid #1a365d !important;
+                padding-bottom: 0.3mm !important;
+                white-space: nowrap !important;
+                position: absolute !important;
+                left: 2mm !important;
+                bottom: 1mm !important;
+            }
+
+            .qr-container {
+                position: absolute !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: 0.5mm !important;
+            }
+
+            .card-footer {
+                width: 100% !important;
+                position: relative !important;
+                bottom: auto !important;
+                padding: 0.5mm 1mm !important;
+                font-size: 1.3mm !important;
+                color: #ea580c !important;
+                background: auto !important;
+                border-top: 0.5px solid #e2e8f0 !important;
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                line-height: 1 !important;
+                font-weight: 700 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container" data-student-id="{{ student.id }}">
+        {% csrf_token %}
+        
+        <h1><i class="fas fa-id-card"></i> Student ID Card Preview</h1>
+        <p class="preview-subtitle">Review your professional student identification card</p>
+
+        <div class="card-display-wrapper">
+            <div class="id-card">
+                <!-- HEADER -->
+                <div class="card-header">
+                    <img src="{% static 'images/logo.png' %}" alt="ICT University Logo" class="logo">
+                    <div class="card-title-wrapper">
+                        <div class="card-title">ICT UNIVERSITY</div>
+                        <div class="card-subtitle">STUDENT ID CARD</div>
+                    </div>
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body">
+                    <!-- LEFT SIDE: STUDENT INFO -->
+                    <div class="card-info">
+                        <div class="student-name">{{ student.full_name }}</div>
+                        
+                        <div class="card-field">
+                            <label>Gender:</label>
+                            {{ student.get_gender_display }}
+                        </div>
+
+                        <div class="matricule">MAT: {{ student.matricule }}</div>
+
+                        <div class="card-field">
+                            <label>Faculty:</label>
+                            {{ student.faculty }}
+                        </div>
+
+                        <div class="card-field">
+                            <label>program:</label>
+                            {{ student.department_program }}
+                        </div>
+
+                        {% if student.date_of_birth %}
+                        <div class="card-field">
+                            <label>Date of Birth:</label>
+                            {{ student.date_of_birth|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+
+                        {% if student.issued_year %}
+                        <div class="card-field">
+                            <label>Issued Year:</label>
+                            {{ student.issued_year }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- RIGHT SIDE: PHOTO -->
+                    <div class="card-photo-section">
+                        <img src="{{ student.photo.url }}" alt="Student Photo\" class="student-photo">
+                    </div>
+                </div>
+
+                <!-- QR CODE AT BOTTOM CENTER -->
+                <div class="card-bottom-section">
+                    <div class="vc-text">ICT-U VICE CHANCELLOR</div>
+                    <div class="qr-container">
+                        <img src="{{ student.qr_code.url }}" alt="QR Code" class="qr-code">
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="card-footer">✓ Valid ID Card</div>
+            </div>
+        </div>
+
+        {% if not is_pdf %}
+        <div class="actions-container">
+            <div class="buttons-row">
+                <a href="{% url 'download_pdf' student_id=student.id %}" class="btn btn-primary" id="pdf-btn">
+                    <i class="fas fa-download"></i> Download PDF
+                </a>
+                <a href="{% url 'student_selection' %}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> Select & Export
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Register Another
+                </a>
+                <button type="button" class="btn btn-copy" id="copy-btn" data-student-id="{{ student.id }}" data-student-name="{{ student.full_name }}" data-matricule="{{ student.matricule }}">
+                    <i class="fas fa-copy"></i> Copy Details
+                </button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fas fa-info-circle"></i> Card Information</h3>
+            <p class="info-text">
+                This ID card serves as an official identification document for ICT University students. 
+                It contains essential student information and a QR code for digital verification. 
+                The card is valid for the entire duration of your enrollment. Please keep it safe and 
+                present it when required for campus access and university services.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="spinner-overlay"></div>
+    <div class="loading-spinner" id="loading-spinner">
+        <div class="spinner"></div>
+        <div class="loading-text">Generating PDF...</div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Loading spinner functionality
+            const pdfBtn = document.getElementById('pdf-btn');
+            const spinnerOverlay = document.getElementById('spinner-overlay');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (pdfBtn) {
+                pdfBtn.addEventListener('click', function(e) {
+                    spinnerOverlay.classList.add('active');
+                    loadingSpinner.classList.add('active');
+
+                    // Auto hide spinner after 2.5 seconds (PDF generation should complete by then)
+                    setTimeout(() => {
+                        spinnerOverlay.classList.remove('active');
+                        loadingSpinner.classList.remove('active');
+                    }, 2500);
+                });
+            }
+
+            // Copy to clipboard functionality
+            const copyBtn = document.getElementById('copy-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const studentId = this.dataset.studentId;
+                    const studentName = this.dataset.studentName;
+                    const matricule = this.dataset.matricule;
+                    
+                    const cardInfo = `Student ID Card Details:\nName: ${studentName}\nMatricule: ${matricule}`;
+                    
+                    navigator.clipboard.writeText(cardInfo).then(function() {
+                        showToast('Student details copied to clipboard!', 'success');
+                    }).catch(function() {
+                        showToast('Failed to copy details', 'error');
+                    });
+                });
+            }
+
+            // Toast notification function
+            function showToast(message, type = 'success') {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="toast-message">${message}</div>
+                    <button class="toast-close" onclick="this.parentElement.classList.add('remove'); setTimeout(() => this.parentElement.remove(), 400);">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Auto remove after 4 seconds
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.classList.add('remove');
+                        setTimeout(() => toast.remove(), 400);
+                    }
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>

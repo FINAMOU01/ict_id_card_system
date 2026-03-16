@@ -1,0 +1,199 @@
+/* ICT University Student ID System Styles */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* White background */
+    color: #1a365d; /* Dark Blue */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.welcome-container {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #1a365d; /* Dark Blue */
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #4a5568;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.start-btn {
+    display: inline-block;
+    background-color: #d97706; /* Dark Orange */
+    color: #ffffff;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background-color 0.3s;
+}
+
+.start-btn:hover {
+    background-color: #b45309; /* Darker Orange */
+}
+
+/* Registration Form Styles */
+.registration-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #1a365d;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.submit-btn {
+    background-color: #d97706;
+    color: #ffffff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #b45309;
+}
+
+/* Card Preview Styles */
+.card-preview {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #1a365d;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.card-preview img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.download-btn {
+    background-color: #d97706;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.download-btn:hover {
+    background-color: #b45309;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .welcome-container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    .start-btn {
+        padding: 12px 24px;
+        font-size: 1em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .registration-form {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .card-preview {
+        margin: 10px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .welcome-container,
+    .registration-form,
+    .card-preview {
+        margin: 5px;
+        padding: 15px;
+    }
+
+    .start-btn,
+    .submit-btn,
+    .download-btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}

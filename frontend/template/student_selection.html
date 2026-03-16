@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Students for Bulk Export - ICT University</title>
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1a365d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .selection-form {
+            margin-bottom: 30px;
+        }
+
+        .select-all {
+            background: #1a365d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .select-all:hover {
+            background: #2d3748;
+        }
+
+        .students-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .student-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8fafc;
+            transition: border-color 0.2s;
+        }
+
+        .student-card.selected {
+            border-color: #c2410c;
+            background: #fef7f0;
+        }
+
+        .student-checkbox {
+            display: none;
+        }
+
+        .student-checkbox + label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .student-checkbox + label::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            margin-right: 10px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .student-checkbox:checked + label::before {
+            background: #c2410c;
+            border-color: #c2410c;
+        }
+
+        .student-checkbox:checked + label::before::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 5px;
+        }
+
+        .student-details {
+            color: #4a5568;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .student-registration-date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            padding: 6px 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+            margin-top: 8px;
+        }
+
+        .student-registration-date i {
+            font-size: 0.95em;
+        }
+
+        .student-photo-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-left: 10px;
+            border: 1px solid #d1d5db;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #c2410c, #ea580c);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .no-students {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.2em;
+            margin: 50px 0;
+        }
+
+        .date-filter-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .date-filter-title {
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-filter-inputs {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .date-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .date-input-wrapper label {
+            color: white;
+            font-size: 0.9em;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .date-input-wrapper input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95em;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .date-input-wrapper input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .date-filter-clear {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .date-filter-clear:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .students-container {
+                max-height: 50vh;
+            }
+
+            .students-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .student-card {
+                padding: 10px;
+            }
+
+            .student-photo-thumb {
+                width: 50px;
+                height: 50px;
+            }
+
+            .select-all,
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9em;
+                width: 100%;
+                box-sizing: border-box;
+                margin-bottom: 10px;
+            }
+
+            .actions .btn {
+                margin: 5px 0;
+            }
+
+            .date-filter-inputs {
+                flex-direction: column;
+            }
+
+            .date-input-wrapper {
+                width: 100%;
+                min-width: 100%;
+            }
+
+            .date-filter-clear {
+                width: 100%;
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Students for Bulk Export</h1>
+
+        {% if students %}
+        <form method="post" action="{% url 'bulk_preview' %}" class="selection-form">
+            {% csrf_token %}
+            <button type="button" class="select-all" onclick="toggleAll()">Select/Deselect All</button>
+
+            <div class="date-filter-section">
+                <div class="date-filter-title">
+                    <i class="fas fa-filter"></i>
+                    Filter by Registration Date
+                </div>
+                <div class="date-filter-inputs">
+                    <div class="date-input-wrapper">
+                        <label for="date-from">From:</label>
+                        <input type="date" id="date-from" class="date-filter-input">
+                    </div>
+                    <div class="date-input-wrapper">
+                        <label for="date-to">To:</label>
+                        <input type="date" id="date-to" class="date-filter-input">
+                    </div>
+                    <button type="button" class="date-filter-clear" onclick="clearDateFilter()"><i class="fas fa-redo"></i> Clear Filter</button>
+                </div>
+            </div>
+
+            <div class="students-container">
+                <div class="students-grid">
+                    {% for student in students %}
+                    <div class="student-card" onclick="toggleCard(this)" data-registration-date="{{ student.created_at|date:'Y-m-d' }}">
+                        <input type="checkbox" name="selected_students" value="{{ student.id }}" id="student_{{ student.id }}" class="student-checkbox">
+                        <label for="student_{{ student.id }}">
+                            <div class="student-info">
+                                <div class="student-name">{{ student.full_name }}</div>
+                                <div class="student-details">
+                                    Matricule: {{ student.matricule }}<br>
+                                    Faculty: {{ student.faculty }}<br>
+                                    Gender: {{ student.get_gender_display }}
+                                </div>
+                                <div class="student-registration-date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Registered: {{ student.created_at|date:"d/m/Y \a\t H:i" }}
+                                </div>
+                            </div>
+                            <img src="{{ student.photo.url }}" alt="Photo" class="student-photo-thumb">
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Preview Selected Cards</button>
+                <a href="{% url 'welcome' %}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </form>
+        {% else %}
+        <div class="no-students">
+            <p>No students registered yet.</p>
+            <a href="{% url 'register' %}" class="btn btn-primary">Register First Student</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function filterStudentsByDate() {
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const studentCards = document.querySelectorAll('.student-card');
+            let visibleCount = 0;
+
+            studentCards.forEach(card => {
+                const cardDate = card.getAttribute('data-registration-date');
+                let isVisible = true;
+
+                if (dateFrom && cardDate < dateFrom) {
+                    isVisible = false;
+                }
+                if (dateTo && cardDate > dateTo) {
+                    isVisible = false;
+                }
+
+                card.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            // Show/hide no results message
+            let noResultsDiv = document.getElementById('no-results-date');
+            if (visibleCount === 0 && (dateFrom || dateTo)) {
+                if (!noResultsDiv) {
+                    noResultsDiv = document.createElement('div');
+                    noResultsDiv.id = 'no-results-date';
+                    noResultsDiv.style.cssText = 'text-align: center; color: #6b7280; font-size: 1.1em; margin: 30px 0; padding: 20px; background: #f0f4ff; border-radius: 8px; border: 2px dashed #667eea;';
+                    noResultsDiv.innerHTML = '<i class="fas fa-search" style="font-size: 2em; margin-bottom: 10px; display: block; opacity: 0.5;"></i>No students found for the selected date range';
+                    document.querySelector('.students-grid').parentNode.insertBefore(noResultsDiv, document.querySelector('.students-grid'));
+                }
+                noResultsDiv.style.display = 'block';
+            } else if (noResultsDiv) {
+                noResultsDiv.style.display = 'none';
+            }
+        }
+
+        function clearDateFilter() {
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            const studentCards = document.querySelectorAll('.student-card');
+            studentCards.forEach(card => card.style.display = 'block');
+            const noResultsDiv = document.getElementById('no-results-date');
+            if (noResultsDiv) noResultsDiv.style.display = 'none';
+        }
+
+        // Add event listeners for date filter
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateFromInput = document.getElementById('date-from');
+            const dateToInput = document.getElementById('date-to');
+            if (dateFromInput) dateFromInput.addEventListener('change', filterStudentsByDate);
+            if (dateToInput) dateToInput.addEventListener('change', filterStudentsByDate);
+        });
+
+        function toggleCard(card) {
+            const checkbox = card.querySelector('.student-checkbox');
+            const label = card.querySelector('label');
+            checkbox.checked = !checkbox.checked;
+            card.classList.toggle('selected', checkbox.checked);
+        }
+
+        function toggleAll() {
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                cb.closest('.student-card').classList.toggle('selected', cb.checked);
+            });
+        }
+
+        // Prevent form submission if no students selected
+        document.querySelector('.selection-form').addEventListener('submit', function(e) {
+            const checkedBoxes = document.querySelectorAll('.student-checkbox:checked');
+            if (checkedBoxes.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one student.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

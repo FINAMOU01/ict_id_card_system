@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ID Card - {{ student.matricule }}</title>
+    <style>
+        @page {
+            size: 85.6mm 54mm;
+            margin: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: white;
+            width: 85.6mm;
+            height: 54mm;
+        }
+        
+        /* Main Card Container */
+        .id-card {
+            width: 85.6mm;
+            height: 54mm;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border: 0.3mm solid #1a365d;
+            border-radius: 1mm;
+            overflow: hidden;
+        }
+        
+        /* Header - Dark Blue Bar */
+        .card-header {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, #1a365d 0%, #2d3748 100%);
+            height: 8mm;
+            padding: 0 1mm;
+            gap: 0.8mm;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            width: 5mm;
+            height: 5mm;
+            flex-shrink: 0;
+            object-fit: contain;
+        }
+        
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+        
+        .card-title {
+            color: #ffffff;
+            font-size: 2.2mm;
+            font-weight: bold;
+            letter-spacing: 0.1mm;
+        }
+        
+        .card-subtitle {
+            color: #f59e0b;
+            font-size: 1.3mm;
+            font-weight: 600;
+        }
+        
+        /* Body Section */
+        .card-body {
+            display: flex;
+            flex: 1;
+            padding: 1mm;
+            gap: 1mm;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        /* Left Side - Photo and QR */
+        .photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 18mm;
+            flex-shrink: 0;
+            gap: 0.5mm;
+        }
+        
+        .student-photo {
+            width: 16mm;
+            height: 19mm;
+            object-fit: cover;
+            border: 0.2mm solid #1a365d;
+            border-radius: 0.3mm;
+        }
+        
+        .qr-code {
+            width: 10mm;
+            height: 10mm;
+            object-fit: contain;
+            border: 0.2mm solid #f59e0b;
+            border-radius: 0.2mm;
+            background: white;
+        }
+        
+        /* Right Side - Student Information - Compact */
+        .info-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 0.2mm;
+            min-width: 0;
+            overflow: visible;
+        }
+        
+        /* Student Name - very compact */
+        .student-name {
+            font-size: 2.4mm;
+            font-weight: bold;
+            color: #1a365d;
+            line-height: 1.1;
+            text-transform: uppercase;
+            word-wrap: break-word;
+            margin-bottom: 0.3mm;
+        }
+        
+        /* All info rows - single line compact */
+        .info-row {
+            font-size: 1.8mm;
+            font-weight: bold;
+            color: #1e293b;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .info-label {
+            color: #475569;
+        }
+        
+        .info-value {
+            color: #1e293b;
+        }
+        
+        /* Footer */
+        .card-footer {
+            height: 2.5mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a365d;
+            color: #ffffff;
+            font-size: 1.6mm;
+            font-weight: bold;
+            letter-spacing: 0.2mm;
+            flex-shrink: 0;
+        }
+        
+        .valid-icon {
+            margin-right: 0.3mm;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="id-card">
+        <!-- Header -->
+        <div class="card-header">
+            <img src="file://{{ logo_path }}" alt="ICT University" class="logo">
+            <div class="header-text">
+                <div class="card-title">ICT UNIVERSITY</div>
+                <div class="card-subtitle">STUDENT ID CARD</div>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+            <!-- Photo Section -->
+            <div class="photo-section">
+                <img src="file://{{ photo_path }}" alt="Student Photo" class="student-photo">
+                <img src="file://{{ qr_path }}" alt="QR Code" class="qr-code">
+            </div>
+
+            <!-- Information Section - Compact single lines -->
+            <div class="info-section">
+                <div class="student-name">{{ student.full_name|upper }}</div>
+                
+                <div class="info-row"><span class="info-label">Gender:</span> <span class="info-value">{{ student.get_gender_display }}</span></div>
+                
+                <div class="info-row"><span class="info-label">MAT:</span> <span class="info-value">{{ student.matricule }}</span></div>
+                
+                <div class="info-row"><span class="info-label">Faculty:</span> <span class="info-value">{{ student.faculty }}</span></div>
+                
+                <div class="info-row"><span class="info-label">Program:</span> <span class="info-value">{{ student.department_program }}</span></div>
+                
+                {% if student.date_of_birth %}
+                <div class="info-row"><span class="info-label">DOB:</span> <span class="info-value">{{ student.date_of_birth|date:"d/m/Y" }}</span></div>
+                {% endif %}
+                
+                {% if student.issued_year %}
+                <div class="info-row"><span class="info-label">Issued:</span> <span class="info-value">{{ student.issued_year }}</span></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <span class="valid-icon">✓</span> VALID STUDENT ID
+        </div>
+    </div>
+</body>
+</html>

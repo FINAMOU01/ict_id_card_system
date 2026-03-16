@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ICT University Student ID System</title>
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1a365d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        h1 {
+            color: #1a365d;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .login-form {
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1a365d;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+            font-weight: bold;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .admin-link {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+
+        .admin-link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .admin-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="ICT University Logo">
+        </div>
+        <h1>ICT University</h1>
+        <p class="subtitle">Student ID Card System</p>
+
+        {% if form.errors %}
+        <div class="error-message">
+            <strong>Login Failed!</strong> Please check your username and password.
+        </div>
+        {% endif %}
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <div class="admin-link">
+            <a href="{% url 'admin:index' %}">Admin Panel</a>
+        </div>
+    </div>
+</body>
+</html>
