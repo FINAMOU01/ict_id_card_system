@@ -1,236 +1,455 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bulk Staff ID Cards - ICT University</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
-        html, body { margin: 0; padding: 0; font-family: 'Poppins', 'Segoe UI', sans-serif; background: #fff7ed; }
-        body { padding: 20mm; }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", "Segoe UI", sans-serif;
+        background: #fff7ed;
+      }
+      body {
+        padding: 20mm;
+      }
 
-        .page-header {
-            text-align: center; margin-bottom: 35px;
-            padding-bottom: 22px; border-bottom: 3px solid #fed7aa;
+      .page-header {
+        text-align: center;
+        margin-bottom: 35px;
+        padding-bottom: 22px;
+        border-bottom: 3px solid #fed7aa;
+      }
+      .page-header h1 {
+        color: #c2410c;
+        font-size: 2.3em;
+        margin: 0 0 8px;
+        font-weight: 700;
+      }
+      .page-header p {
+        color: #718096;
+        font-size: 1em;
+        margin: 0;
+      }
+
+      /* Controls bar */
+      .controls-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        background: linear-gradient(135deg, #c2410c, #f97316);
+        padding: 16px 22px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+      }
+      .controls-bar span {
+        color: white;
+        font-weight: 600;
+        font-size: 0.95em;
+      }
+      .controls-bar input {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95em;
+        flex: 1;
+        min-width: 200px;
+        background: rgba(255, 255, 255, 0.9);
+      }
+      .ctrl-btn {
+        padding: 8px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .ctrl-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Cards grid */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20mm;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .id-card:nth-child(6n) {
+        break-after: page;
+        margin-bottom: 10mm;
+      }
+
+      /* The ID card */
+      .id-card {
+        width: 85.6mm;
+        height: 54mm;
+        background: linear-gradient(
+          160deg,
+          #fff7ed 0%,
+          #fffbf5 50%,
+          #fef3c7 100%
+        );
+        border: 1.5px solid #f97316;
+        border-radius: 3.5mm;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 15px 40px rgba(249, 115, 22, 0.3);
+        overflow: hidden;
+        transition:
+          transform 0.4s ease,
+          box-shadow 0.4s ease;
+        transform-style: preserve-3d;
+        position: relative;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .id-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 45px rgba(249, 115, 22, 0.4);
+      }
+
+      /* Watermark */
+      .id-card::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 340px;
+        height: 340px;
+        background-image: url('{% static "images/logo.png" %}');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .card-header {
+        background: linear-gradient(
+          90deg,
+          #c2410c 0%,
+          #ea580c 50%,
+          #f97316 100%
+        );
+        padding: 2mm 3mm;
+        display: flex;
+        align-items: center;
+        gap: 2mm;
+        border-radius: 3.5mm 3.5mm 0 0;
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      .logo {
+        width: 8mm;
+        height: 8mm;
+        flex-shrink: 0;
+      }
+      .card-title-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3mm;
+      }
+      .card-title {
+        color: #fff;
+        font-size: 3mm;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+      .card-subtitle {
+        color: #fed7aa;
+        font-size: 2mm;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      /* Body */
+      .card-body {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 2mm;
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        padding: 2mm 2.5mm;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .card-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8mm;
+        font-size: 2mm;
+        overflow: hidden;
+      }
+
+      .staff-name {
+        font-size: 2.5mm;
+        font-weight: 800;
+        color: #c2410c;
+        text-transform: uppercase;
+        line-height: 1.15;
+      }
+      .role-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #f97316, #c2410c);
+        color: white;
+        font-size: 1.8mm;
+        font-weight: 700;
+        padding: 0.4mm 2mm;
+        border-radius: 5mm;
+        letter-spacing: 0.3px;
+        margin-bottom: 1mm;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .card-field {
+        font-size: 2mm;
+        color: #2d3748;
+        line-height: 1.4;
+      }
+      .field-label {
+        color: #9a3412;
+        font-weight: 700;
+        font-size: 1.7mm;
+        text-transform: uppercase;
+      }
+
+      .card-field label {
+        color: #9a3412;
+        font-weight: 700;
+        font-size: 1.8mm;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        margin-right: 1mm;
+      }
+
+      .card-photo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .student-photo {
+        width: 16mm;
+        height: 20mm;
+        object-fit: cover;
+        border: 0.5mm solid #f97316;
+        border-radius: 0.8mm;
+      }
+
+      .card-bottom-section {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1mm 3mm;
+        position: relative;
+        z-index: 1;
+      }
+      .vc-text {
+        font-size: 1.6mm;
+        font-weight: 700;
+        color: #9a3412;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+
+      .card-footer {
+        background: linear-gradient(90deg, #c2410c, #f97316);
+        color: white;
+        font-size: 1.8mm;
+        font-weight: 700;
+        text-align: center;
+        padding: 1mm;
+        border-radius: 0 0 3.5mm 3.5mm;
+        flex-shrink: 0;
+        letter-spacing: 0.3px;
+      }
+      /* Checkbox overlay */
+      .card-select-checkbox {
+        position: absolute;
+        top: 12mm;
+        right: 4px;
+        z-index: 10;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #c2410c;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 40px 20px;
+        color: #718096;
+        font-size: 1.1em;
+        background: #fff7ed;
+        border-radius: 10px;
+        border: 2px dashed #f97316;
+      }
+
+      @media print {
+        body {
+          padding: 10mm;
+          background: white;
         }
-        .page-header h1 { color: #c2410c; font-size: 2.3em; margin: 0 0 8px; font-weight: 700; }
-        .page-header p  { color: #718096; font-size: 1em; margin: 0; }
-
-        /* Controls bar */
-        .controls-bar {
-            display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
-            background: linear-gradient(135deg, #c2410c, #f97316);
-            padding: 16px 22px; border-radius: 10px; margin-bottom: 25px;
-        }
-        .controls-bar span { color: white; font-weight: 600; font-size: .95em; }
-        .controls-bar input {
-            padding: 8px 14px; border: none; border-radius: 6px;
-            font-size: .95em; flex: 1; min-width: 200px;
-            background: rgba(255,255,255,.9);
-        }
-        .ctrl-btn {
-            padding: 8px 16px; border: 1px solid rgba(255,255,255,.5);
-            background: rgba(255,255,255,.15); color: white;
-            border-radius: 6px; cursor: pointer; font-size: .9em; font-weight: 600;
-            transition: all .2s; white-space: nowrap;
-        }
-        .ctrl-btn:hover { background: rgba(255,255,255,.3); }
-
-        /* Cards grid */
-        .cards-grid {
-            display: grid; grid-template-columns: 1fr; gap: 20mm;
-            max-width: 900px; margin: 0 auto; padding: 0 20px;
-        }
-
-        /* The ID card */
-        .id-card {
-            width: 85.6mm;
-            height: 54mm;
-            background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 50%, #fef3c7 100%);
-            border: 1.5px solid #f97316;
-            border-radius: 3.5mm;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.3);
-            overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            transform-style: preserve-3d;
-            position: relative;
-        }
-
-        .id-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 45px rgba(249, 115, 22, 0.4);
-        }
-
-        /* Watermark */
-        .id-card::after {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 340px; height: 340px;
-            background-image: url('{% static "images/logo.png" %}');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            opacity: 0.05; pointer-events: none; z-index: 0;
-        }
-
-        .card-header {
-            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
-            padding: 2mm 3mm;
-            display: flex;
-            align-items: center;
-            gap: 2mm;
-            border-radius: 3.5mm 3.5mm 0 0;
-            position: relative;
-            z-index: 2;
-            flex-shrink: 0;
-        }
-
-        .logo { width: 8mm; height: 8mm; flex-shrink: 0; }
-        .card-title-wrapper { display: flex; flex-direction: column; gap: 0.3mm; }
-        .card-title    { color: #fff; font-size: 3mm; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-        .card-subtitle { color: #fed7aa; font-size: 2mm; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-
-        /* Body */
-        .card-body {
-            display: grid; grid-template-columns: 1.6fr 1fr; gap: 2mm;
-            flex: 1; position: relative; z-index: 1;
-            padding: 2mm 2.5mm; overflow: hidden; min-height: 0;
-        }
-
-        .card-info { display: flex; flex-direction: column; gap: 0.8mm; font-size: 2mm; overflow: hidden; }
-
-        .staff-name  { font-size: 2.5mm; font-weight: 800; color: #c2410c; text-transform: uppercase; line-height: 1.15; }
-        .role-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #f97316, #c2410c);
-            color: white;
-            font-size: 1.8mm;
-            font-weight: 700;
-            padding: 0.4mm 2mm;
-            border-radius: 5mm;
-            letter-spacing: 0.3px;
-            margin-bottom: 1mm;
-            text-transform: uppercase;
-        }
-        .card-field { font-size: 2mm; color: #2d3748; line-height: 1.4; }
-        .field-label { color: #9a3412; font-weight: 700; font-size: 1.7mm; text-transform: uppercase; }
-
-        .card-field label {
-            color: #9a3412; font-weight: 700; font-size: 1.8mm;
-            text-transform: uppercase; letter-spacing: .2px; margin-right: 1mm;
-        }
-
-        .card-photo-section { display: flex; flex-direction: column; align-items: center; }
-
-        .student-photo {
-            width: 16mm; height: 20mm;
-            object-fit: cover;
-            border: 0.5mm solid #f97316;
-            border-radius: 0.8mm;
-        }
-
-        .card-bottom-section {
-            display: flex; align-items: center; justify-content: flex-start;
-            padding: 1mm 3mm;
-            position: relative; z-index: 1;
-        }
-        .vc-text { font-size: 1.6mm; font-weight: 700; color: #9a3412; letter-spacing: .3px; text-transform: uppercase; }
-
-        .card-footer {
-            background: linear-gradient(90deg, #c2410c, #f97316);
-            color: white; font-size: 1.8mm; font-weight: 700;
-            text-align: center; padding: 1mm;
-            border-radius: 0 0 3.5mm 3.5mm; flex-shrink: 0; letter-spacing: .3px;
-        }
-        /* Checkbox overlay */
+        .page-header,
+        .controls-bar,
+        .download-area,
         .card-select-checkbox {
-            position: absolute; top: 12mm; right: 4px; z-index: 10;
-            width: 18px; height: 18px; cursor: pointer; accent-color: #c2410c;
+          display: none !important;
         }
-
-        .no-results {
-            text-align: center; padding: 40px 20px;
-            color: #718096; font-size: 1.1em;
-            background: #fff7ed; border-radius: 10px;
-            border: 2px dashed #f97316;
-        }
-
-        @media print {
-            body { padding: 10mm; background: white; }
-            .page-header, .controls-bar, .download-area,
-            .card-select-checkbox { display: none !important; }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     {% if show_controls %}
     <!-- ── Interactive (all-staff) mode ── -->
     <div class="page-header">
-        <h1><i class="fas fa-id-badge"></i> Staff ID Cards</h1>
-        <p>Select and export staff identification cards</p>
+      <h1><i class="fas fa-id-badge"></i> Staff ID Cards</h1>
+      <p>Select and export staff identification cards</p>
     </div>
 
     <form method="post" action="{% url 'staff_bulk_preview' %}" id="bulk-form">
-        {% csrf_token %}
-        <div class="controls-bar">
-            <span><i class="fas fa-users"></i>
-                <span id="selection-count">0</span> / <span id="total-count">0</span> selected
-            </span>
-            <input type="text" id="search-input" placeholder="Search by name, title, or department…">
-            <button type="button" class="ctrl-btn" onclick="selectAll()"><i class="fas fa-check-square"></i> All</button>
-            <button type="button" class="ctrl-btn" onclick="deselectAll()"><i class="fas fa-square"></i> None</button>
-            <button type="submit" class="ctrl-btn" style="background:rgba(255,255,255,.3);font-weight:700;">
-                <i class="fas fa-eye"></i> Preview Selected
-            </button>
-        </div>
+      {% csrf_token %}
+      <div class="controls-bar">
+        <span
+          ><i class="fas fa-users"></i> <span id="selection-count">0</span> /
+          <span id="total-count">0</span> selected
+        </span>
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search by name, title, or department…"
+        />
+        <button type="button" class="ctrl-btn" onclick="selectAll()">
+          <i class="fas fa-check-square"></i> All
+        </button>
+        <button type="button" class="ctrl-btn" onclick="deselectAll()">
+          <i class="fas fa-square"></i> None
+        </button>
+        <button
+          type="submit"
+          class="ctrl-btn"
+          style="background: rgba(255, 255, 255, 0.3); font-weight: 700"
+        >
+          <i class="fas fa-eye"></i> Preview Selected
+        </button>
+      </div>
 
-        <div class="cards-grid">
-            {% for member in staff_list %}
-            <div class="id-card" style="position:relative;">
-                <input type="checkbox" name="selected_staff" value="{{ member.id }}"
-                       class="card-select-checkbox" onchange="updateSelectionCount()">
-                <div class="card-header">
-                    <img src="{% static 'images/logo.png' %}" alt="ICT University Logo" class="logo">
-                    <div class="card-title-wrapper">
-                        <div class="card-title">ICT UNIVERSITY</div>
-                        <div class="card-subtitle">STAFF ID CARD</div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="card-info">
-                        <div class="staff-name">{{ member.full_name }}</div>
-                        <div class="role-badge"><i class="fas fa-briefcase"></i> {{ member.job_title }}</div>
-                        <div class="card-field"><span class="field-label">Dept:</span> {{ member.department }}</div>
-                        <div class="card-field"><span class="field-label">Gender:</span> {{ member.get_gender_display }}</div>
-                        {% if member.phone_number %}
-                        <div class="card-field"><span class="field-label">Phone:</span> {{ member.phone_number }}</div>
-                        {% endif %}
-                        {% if member.issued_year %}
-                        <div class="card-field"><span class="field-label">Issued:</span> {{ member.issued_year }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="card-photo-section">
-                        <img src="{{ member.photo.url }}" alt="Staff Photo" class="student-photo">
-                    </div>
-                </div>
-                <div class="card-bottom-section">
-                    <div class="vc-text">ICT-U VICE CHANCELLOR</div>
-                </div>
-                <div class="card-footer">✓ Valid Staff ID Card</div>
+      <div class="cards-grid">
+        {% for member in staff_list %}
+        <div class="id-card" style="position: relative">
+          <input
+            type="checkbox"
+            name="selected_staff"
+            value="{{ member.id }}"
+            class="card-select-checkbox"
+            onchange="updateSelectionCount()"
+          />
+          <div class="card-header">
+            <img
+              src="{% static 'images/logo.png' %}"
+              alt="ICT University Logo"
+              class="logo"
+            />
+            <div class="card-title-wrapper">
+              <div class="card-title">ICT UNIVERSITY</div>
+              <div class="card-subtitle">STAFF ID CARD</div>
             </div>
-            {% endfor %}
+          </div>
+          <div class="card-body">
+            <div class="card-info">
+              <div class="staff-name">{{ member.full_name }}</div>
+              <div class="role-badge">
+                <i class="fas fa-briefcase"></i> {{ member.job_title }}
+              </div>
+              <div class="card-field">
+                <span class="field-label">Dept:</span> {{ member.department }}
+              </div>
+              <div class="card-field">
+                <span class="field-label">Gender:</span>
+                {{member.get_gender_display }}
+              </div>
+              {% if member.phone_number %}
+              <div class="card-field">
+                <span class="field-label">Phone:</span> {{ member.phone_number
+                }}
+              </div>
+              {% endif %} {% if member.issued_year %}
+              <div class="card-field">
+                <span class="field-label">Issued:</span> {{ member.issued_year
+                }}
+              </div>
+              {% endif %}
+            </div>
+            <div class="card-photo-section">
+              <img
+                src="{{ member.photo.url }}"
+                alt="Staff Photo"
+                class="student-photo"
+              />
+            </div>
+          </div>
+          <div class="card-bottom-section">
+            <div class="vc-text">ICT-U VICE CHANCELLOR</div>
+          </div>
+          <div class="card-footer">✓ Valid Staff ID Card</div>
         </div>
+        {% endfor %}
+      </div>
     </form>
 
-    <div style="text-align:center;margin:30px;padding:20px;background:white;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);">
-        <a href="{% url 'register_staff' %}" style="background:#6b7280;color:white;padding:12px 25px;text-decoration:none;border-radius:6px;display:inline-block;">
-            Back to Register
-        </a>
+    <div
+      style="
+        text-align: center;
+        margin: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <a
+        href="{% url 'register_staff' %}"
+        style="
+          background: #6b7280;
+          color: white;
+          padding: 12px 25px;
+          text-decoration: none;
+          border-radius: 6px;
+          display: inline-block;
+        "
+      >
+        Back to Register
+      </a>
     </div>
 
     {% else %}
@@ -238,100 +457,172 @@
 
     {% if not is_pdf %}
     <div class="page-header">
-        <h1>Selected Staff Cards</h1>
-        <p>{{ staff_list|length }} staff member{{ staff_list|length|pluralize }} selected</p>
+      <h1>Selected Staff Cards</h1>
+      <p>
+        {{ staff_list|length }} staff member{{ staff_list|length|pluralize }}
+        selected
+      </p>
     </div>
     {% endif %}
 
     <div class="cards-grid">
-        {% for member in staff_list %}
-        <div class="id-card">
-            <div class="card-header">
-                <img src="{% static 'images/logo.png' %}" alt="ICT University Logo" class="logo">
-                <div class="card-title-wrapper">
-                    <div class="card-title">ICT UNIVERSITY</div>
-                    <div class="card-subtitle">STAFF ID CARD</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card-info">
-                    <div class="staff-name">{{ member.full_name }}</div>
-                    <div class="role-badge"><i class="fas fa-briefcase"></i> {{ member.job_title }}</div>
-                    <div class="card-field"><span class="field-label">Dept:</span> {{ member.department }}</div>
-                    <div class="card-field"><span class="field-label">Gender:</span> {{ member.get_gender_display }}</div>
-                    {% if member.phone_number %}
-                    <div class="card-field"><span class="field-label">Phone:</span> {{ member.phone_number }}</div>
-                    {% endif %}
-                    {% if member.issued_year %}
-                    <div class="card-field"><span class="field-label">Issued:</span> {{ member.issued_year }}</div>
-                    {% endif %}
-                </div>
-                <div class="card-photo-section">
-                    <img src="{{ member.photo.url }}" alt="Staff Photo" class="student-photo">
-                </div>
-            </div>
-            <div class="card-bottom-section">
-                <div class="vc-text">ICT-U VICE CHANCELLOR</div>
-            </div>
-            <div class="card-footer">✓ Valid Staff ID Card</div>
+      {% for member in staff_list %}
+      <div class="id-card">
+        <div class="card-header">
+          <img
+            src="{% static 'images/logo.png' %}"
+            alt="ICT University Logo"
+            class="logo"
+          />
+          <div class="card-title-wrapper">
+            <div class="card-title">ICT UNIVERSITY</div>
+            <div class="card-subtitle">STAFF ID CARD</div>
+          </div>
         </div>
-        {% endfor %}
+        <div class="card-body">
+          <div class="card-info">
+            <div class="staff-name">{{ member.full_name }}</div>
+            <div class="role-badge">
+              <i class="fas fa-briefcase"></i> {{ member.job_title }}
+            </div>
+            <div class="card-field">
+              <span class="field-label">Dept:</span> {{ member.department }}
+            </div>
+            <div class="card-field">
+              <span class="field-label">Gender:</span>
+              {{member.get_gender_display }}
+            </div>
+            {% if member.phone_number %}
+            <div class="card-field">
+              <span class="field-label">Phone:</span> {{ member.phone_number }}
+            </div>
+            {% endif %} {% if member.issued_year %}
+            <div class="card-field">
+              <span class="field-label">Issued:</span> {{ member.issued_year }}
+            </div>
+            {% endif %}
+          </div>
+          <div class="card-photo-section">
+            <img
+              src="{{ member.photo.url }}"
+              alt="Staff Photo"
+              class="student-photo"
+            />
+          </div>
+        </div>
+        <div class="card-bottom-section">
+          <div class="vc-text">ICT-U VICE CHANCELLOR</div>
+        </div>
+        <div class="card-footer">✓ Valid Staff ID Card</div>
+      </div>
+      {% endfor %}
     </div>
 
     {% if not is_pdf %}
-    <div style="text-align:center;margin:30px;padding:20px;background:white;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);">
-        <a href="{% url 'staff_bulk_pdf' %}?{% for member in staff_list %}selected_staff={{ member.id }}{% if not forloop.last %}&{% endif %}{% endfor %}"
-           style="background:linear-gradient(135deg,#c2410c,#f97316);padding:14px 28px;font-size:1.1em;border-radius:8px;text-decoration:none;color:white;display:inline-block;box-shadow:0 4px 15px rgba(194,65,12,.3);margin-right:14px;">
-            <i class="fas fa-download"></i> Download PDF
-        </a>
-        <a href="{% url 'staff_selection' %}" style="background:#6b7280;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;display:inline-block;">
-            ← Back to Selection
-        </a>
+    <div
+      style="
+        text-align: center;
+        margin: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <a
+        href="{% url 'staff_bulk_pdf' %}?{% for member in staff_list %}selected_staff={{ member.id }}{% if not forloop.last %}&{% endif %}{% endfor %}"
+        style="
+          background: linear-gradient(135deg, #c2410c, #f97316);
+          padding: 14px 28px;
+          font-size: 1.1em;
+          border-radius: 8px;
+          text-decoration: none;
+          color: white;
+          display: inline-block;
+          box-shadow: 0 4px 15px rgba(194, 65, 12, 0.3);
+          margin-right: 14px;
+        "
+      >
+        <i class="fas fa-download"></i> Download PDF
+      </a>
+      <a
+        href="{% url 'staff_selection' %}"
+        style="
+          background: #6b7280;
+          color: white;
+          padding: 14px 28px;
+          text-decoration: none;
+          border-radius: 8px;
+          display: inline-block;
+        "
+      >
+        ← Back to Selection
+      </a>
     </div>
-    {% endif %}
-    {% endif %}
+    {% endif %} {% endif %}
 
     <script>
-        function initializeControls() {
-            const total = document.querySelectorAll('.id-card').length;
-            const el = document.getElementById('total-count');
-            if (el) el.textContent = total;
-            updateSelectionCount();
-        }
-        function selectAll() {
-            document.querySelectorAll('input[name="selected_staff"]').forEach(cb => cb.checked = true);
-            updateSelectionCount();
-        }
-        function deselectAll() {
-            document.querySelectorAll('input[name="selected_staff"]').forEach(cb => cb.checked = false);
-            updateSelectionCount();
-        }
-        function updateSelectionCount() {
-            const cbs = document.querySelectorAll('input[name="selected_staff"]');
-            const sel = Array.from(cbs).filter(cb => cb.checked && cb.offsetParent !== null).length;
-            const vis = Array.from(cbs).filter(cb => cb.offsetParent !== null).length;
-            const sc = document.getElementById('selection-count');
-            const tc = document.getElementById('total-count');
-            if (sc) sc.textContent = sel;
-            if (tc) tc.textContent = vis;
-        }
-        function filterCards() {
-            const q = document.getElementById('search-input')?.value.toLowerCase() || '';
-            document.querySelectorAll('.id-card').forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
-            updateSelectionCount();
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeControls();
-            document.getElementById('search-input')?.addEventListener('input', filterCards);
-            document.querySelectorAll('input[name="selected_staff"]')
-                .forEach(cb => cb.addEventListener('change', updateSelectionCount));
-            document.getElementById('bulk-form')?.addEventListener('submit', function (e) {
-                const sel = document.querySelectorAll('input[name="selected_staff"]:checked');
-                if (sel.length === 0) { e.preventDefault(); alert('Please select at least one staff member.'); }
-            });
+      function initializeControls() {
+        const total = document.querySelectorAll(".id-card").length;
+        const el = document.getElementById("total-count");
+        if (el) el.textContent = total;
+        updateSelectionCount();
+      }
+      function selectAll() {
+        document
+          .querySelectorAll('input[name="selected_staff"]')
+          .forEach((cb) => (cb.checked = true));
+        updateSelectionCount();
+      }
+      function deselectAll() {
+        document
+          .querySelectorAll('input[name="selected_staff"]')
+          .forEach((cb) => (cb.checked = false));
+        updateSelectionCount();
+      }
+      function updateSelectionCount() {
+        const cbs = document.querySelectorAll('input[name="selected_staff"]');
+        const sel = Array.from(cbs).filter(
+          (cb) => cb.checked && cb.offsetParent !== null,
+        ).length;
+        const vis = Array.from(cbs).filter(
+          (cb) => cb.offsetParent !== null,
+        ).length;
+        const sc = document.getElementById("selection-count");
+        const tc = document.getElementById("total-count");
+        if (sc) sc.textContent = sel;
+        if (tc) tc.textContent = vis;
+      }
+      function filterCards() {
+        const q =
+          document.getElementById("search-input")?.value.toLowerCase() || "";
+        document.querySelectorAll(".id-card").forEach((card) => {
+          card.style.display = card.innerText.toLowerCase().includes(q)
+            ? "flex"
+            : "none";
         });
+        updateSelectionCount();
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeControls();
+        document
+          .getElementById("search-input")
+          ?.addEventListener("input", filterCards);
+        document
+          .querySelectorAll('input[name="selected_staff"]')
+          .forEach((cb) => cb.addEventListener("change", updateSelectionCount));
+        document
+          .getElementById("bulk-form")
+          ?.addEventListener("submit", function (e) {
+            const sel = document.querySelectorAll(
+              'input[name="selected_staff"]:checked',
+            );
+            if (sel.length === 0) {
+              e.preventDefault();
+              alert("Please select at least one staff member.");
+            }
+          });
+      });
     </script>
-</body>
+  </body>
 </html>
