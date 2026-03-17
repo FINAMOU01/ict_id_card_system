@@ -1,289 +1,520 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Staff ID Card Preview - ICT University</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
-            min-height: 100vh;
-            padding: 30px 20px;
+      body {
+        font-family: "Poppins", "Segoe UI", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #f97316 0%,
+          #ea580c 50%,
+          #c2410c 100%
+        );
+        min-height: 100vh;
+        padding: 30px 20px;
+      }
+      body.pdf-mode {
+        background: white;
+        padding: 0;
+      }
+
+      .preview-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        padding: 50px 40px;
+        animation: slideUp 0.6s ease-out;
+      }
+      .preview-container.pdf-mode {
+        max-width: none;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
         }
-        body.pdf-mode { background: white; padding: 0; }
-
-        .preview-container {
-            max-width: 1000px; margin: 0 auto;
-            background: white; border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,.15);
-            padding: 50px 40px;
-            animation: slideUp .6s ease-out;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .preview-container.pdf-mode { max-width: none; box-shadow: none; padding: 0; border-radius: 0; }
+      }
 
-        @keyframes slideUp {
-            from { opacity:0; transform:translateY(30px); }
-            to   { opacity:1; transform:translateY(0); }
+      h1 {
+        text-align: center;
+        font-size: 2.4em;
+        font-weight: 700;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, #f97316, #c2410c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .preview-subtitle {
+        text-align: center;
+        color: #4a5568;
+        font-size: 1.05em;
+        margin-bottom: 45px;
+        font-weight: 500;
+      }
+
+      /* ══════════════ STAFF ID CARD ══════════════ */
+      .card-display-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 45px;
+        perspective: 1000px;
+      }
+
+      .id-card {
+        width: 85.6mm;
+        height: 54mm;
+        background: linear-gradient(
+          160deg,
+          #fff7ed 0%,
+          #fffbf5 50%,
+          #fef3c7 100%
+        );
+        border: 1.5px solid #f97316;
+        border-radius: 3.5mm;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 15px 40px rgba(249, 115, 22, 0.3);
+        overflow: hidden;
+        transition:
+          transform 0.4s ease,
+          box-shadow 0.4s ease;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .id-card::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 340px;
+        height: 340px;
+        background-image: url('{% static "images/logo.png" %}');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .id-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 45px rgba(249, 115, 22, 0.4);
+      }
+
+      .card-header {
+        background: linear-gradient(
+          90deg,
+          #c2410c 0%,
+          #ea580c 50%,
+          #f97316 100%
+        );
+        padding: 2mm 3mm;
+        display: flex;
+        align-items: center;
+        gap: 2mm;
+        border-radius: 3.5mm 3.5mm 0 0;
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
+      }
+
+      .logo {
+        width: 8mm;
+        height: 8mm;
+        flex-shrink: 0;
+      }
+      .card-title-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3mm;
+      }
+      .card-title {
+        color: #fff;
+        font-size: 3mm;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+      .card-subtitle {
+        color: #fed7aa;
+        font-size: 2mm;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      .card-body {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 2mm;
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        padding: 2mm 2.5mm;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .card-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8mm;
+        font-size: 2mm;
+        overflow: hidden;
+      }
+
+      .staff-name {
+        font-size: 2.5mm;
+        font-weight: 800;
+        color: #c2410c;
+        text-transform: uppercase;
+        line-height: 1.15;
+      }
+
+      .role-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #f97316, #c2410c);
+        color: white;
+        font-size: 1.8mm;
+        font-weight: 700;
+        padding: 0.4mm 2mm;
+        border-radius: 5mm;
+        letter-spacing: 0.3px;
+        margin-bottom: 1mm;
+        text-transform: uppercase;
+      }
+
+      .card-field {
+        font-size: 2mm;
+        color: #2d3748;
+        line-height: 1.4;
+      }
+      .field-label {
+        color: #9a3412;
+        font-weight: 700;
+        font-size: 1.7mm;
+        text-transform: uppercase;
+      }
+
+      .card-field label {
+        color: #9a3412;
+        font-weight: 700;
+        font-size: 1.8mm;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        margin-right: 1mm;
+      }
+
+      .card-photo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .student-photo {
+        width: 16mm;
+        height: 20mm;
+        object-fit: cover;
+        border: 0.5mm solid #f97316;
+        border-radius: 0.8mm;
+      }
+
+      .card-bottom-section {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1mm 3mm;
+        position: relative;
+        z-index: 1;
+      }
+      .vc-text {
+        font-size: 1.6mm;
+        font-weight: 700;
+        color: #9a3412;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+
+      .card-footer {
+        background: linear-gradient(90deg, #c2410c, #f97316);
+        color: white;
+        font-size: 1.8mm;
+        font-weight: 700;
+        text-align: center;
+        padding: 1mm;
+        border-radius: 0 0 3.5mm 3.5mm;
+        flex-shrink: 0;
+        letter-spacing: 0.3px;
+      }
+
+      /* Buttons */
+      .actions-container {
+        margin-top: 10px;
+      }
+      .buttons-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+
+      .btn {
+        padding: 13px 28px;
+        border-radius: 9px;
+        font-size: 1em;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #f97316, #c2410c);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(249, 115, 22, 0.45);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #92400e, #78350f);
+      }
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+      }
+      .btn-success {
+        background: linear-gradient(135deg, #38a169, #276749);
+      }
+      .btn-success:hover {
+        transform: translateY(-2px);
+      }
+
+      .info-section {
+        margin-top: 35px;
+        padding: 25px 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(249, 115, 22, 0.06),
+          rgba(194, 65, 12, 0.06)
+        );
+        border-radius: 12px;
+        border: 1px solid rgba(249, 115, 22, 0.2);
+      }
+      .info-section h3 {
+        color: #c2410c;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+      .info-section p {
+        color: #4a5568;
+        font-size: 0.95em;
+        line-height: 1.7;
+      }
+
+      .spinner-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+      .spinner-overlay.active {
+        display: block;
+      }
+      .loading-spinner {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 1000;
+      }
+      .loading-spinner.active {
+        display: block;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 12px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
+      }
+      .loading-text {
+        color: white;
+        font-weight: 600;
+      }
 
-        h1 {
-            text-align: center; font-size: 2.4em; font-weight: 700; margin-bottom: 6px;
-            background: linear-gradient(135deg, #f97316, #c2410c);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .preview-subtitle { text-align: center; color: #4a5568; font-size: 1.05em; margin-bottom: 45px; font-weight: 500; }
-
-        /* ══════════════ STAFF ID CARD ══════════════ */
-        .card-display-wrapper { display: flex; justify-content: center; margin-bottom: 45px; perspective: 1000px; }
-
+      @media (max-width: 650px) {
         .id-card {
-            width: 600px;
-            aspect-ratio: 85 / 54;
-            background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 50%, #fef3c7 100%);
-            border: 4px solid #f97316;
-            border-radius: 20px;
-            display: flex; flex-direction: column;
-            box-shadow: 0 15px 40px rgba(249,115,22,.3);
-            overflow: hidden;
-            transition: transform .4s ease, box-shadow .4s ease;
-            transform-style: preserve-3d;
-            position: relative;
+          width: 95vw;
         }
-
-        .id-card::before {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 340px; height: 340px;
-            background-image: url('{% static "images/logo.png" %}');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            opacity: 0.05; pointer-events: none; z-index: 0;
+        .preview-container {
+          padding: 30px 18px;
         }
-
-        .id-card:hover {
-            transform: translateY(-8px) rotateX(5deg) rotateY(-5deg);
-            box-shadow: 0 30px 60px rgba(249,115,22,.45);
+        h1 {
+          font-size: 1.8em;
         }
-
-        .card-header {
-            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
-            padding: 12px 14px 9px;
-            display: flex; align-items: center; gap: 10px;
-            border-radius: 16px 16px 0 0;
-            position: relative; z-index: 2; flex-shrink: 0;
-        }
-
-        .logo { width: 44px; height: 44px; flex-shrink: 0; }
-        .card-title-wrapper { display: flex; flex-direction: column; gap: 2px; }
-        .card-title    { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: .4px; white-space: nowrap; }
-        .card-subtitle { color: #fed7aa; font-size: 10px; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-
-        .card-body {
-            display: flex; flex: 1;
-            padding: 14px 18px; gap: 16px;
-            align-items: flex-start;
-            position: relative; z-index: 1;
-        }
-
-        .card-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-
-        .staff-name {
-            font-size: 18px; font-weight: 800; color: #c2410c;
-            text-transform: uppercase; line-height: 1.2; margin-bottom: 2px;
-        }
-
-        .role-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #f97316, #c2410c);
-            color: white; font-size: 9px; font-weight: 700;
-            padding: 3px 10px; border-radius: 20px; letter-spacing: .5px;
-            margin-bottom: 5px; text-transform: uppercase;
-        }
-
-        .card-field { font-size: 11.5px; color: #2d3748; line-height: 1.35; }
-        .card-field label {
-            color: #9a3412; font-weight: 700; font-size: 10px;
-            text-transform: uppercase; letter-spacing: .3px; margin-right: 4px;
-        }
-
-        .card-photo-section { display: flex; flex-direction: column; align-items: center; }
-
-        .student-photo {
-            width: 100px; height: 120px;
-            object-fit: cover;
-            border: 3px solid #f97316;
-            border-radius: 6px;
-        }
-
-        .card-bottom-section {
-            display: flex; align-items: center; justify-content: flex-start;
-            padding: 4px 14px 5px;
-            position: relative; z-index: 1;
-        }
-        .vc-text { font-size: 8px; font-weight: 700; color: #9a3412; letter-spacing: .5px; text-transform: uppercase; }
-
-        .card-footer {
-            background: linear-gradient(90deg, #c2410c, #f97316);
-            color: white; font-size: 10px; font-weight: 700;
-            text-align: center; padding: 5px;
-            border-radius: 0 0 16px 16px; flex-shrink: 0; letter-spacing: .5px;
-        }
-
-        /* Buttons */
-        .actions-container { margin-top: 10px; }
-        .buttons-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-
-        .btn {
-            padding: 13px 28px; border-radius: 9px; font-size: 1em; font-weight: 600;
-            text-decoration: none; color: white;
-            display: inline-flex; align-items: center; gap: 8px;
-            transition: all .3s; border: none; cursor: pointer;
-            box-shadow: 0 6px 18px rgba(0,0,0,.12);
-        }
-        .btn-primary   { background: linear-gradient(135deg, #f97316, #c2410c); }
-        .btn-primary:hover  { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(249,115,22,.45); }
-        .btn-secondary { background: linear-gradient(135deg, #92400e, #78350f); }
-        .btn-secondary:hover { transform: translateY(-2px); }
-        .btn-success   { background: linear-gradient(135deg, #38a169, #276749); }
-        .btn-success:hover   { transform: translateY(-2px); }
-
-        .info-section {
-            margin-top: 35px; padding: 25px 30px;
-            background: linear-gradient(135deg,rgba(249,115,22,.06),rgba(194,65,12,.06));
-            border-radius: 12px; border: 1px solid rgba(249,115,22,.2);
-        }
-        .info-section h3 { color: #c2410c; margin-bottom: 10px; font-size: 1.1em; }
-        .info-section p  { color: #4a5568; font-size: .95em; line-height: 1.7; }
-
-        .spinner-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.5); z-index: 999;
-        }
-        .spinner-overlay.active { display: block; }
-        .loading-spinner {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%,-50%); text-align: center; z-index: 1000;
-        }
-        .loading-spinner.active { display: block; }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255,255,255,.3);
-            border-top-color: white; border-radius: 50%;
-            animation: spin .8s linear infinite; margin: 0 auto 12px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: white; font-weight: 600; }
-
-        @media (max-width: 650px) {
-            .id-card { width: 95vw; }
-            .preview-container { padding: 30px 18px; }
-            h1 { font-size: 1.8em; }
-        }
+      }
     </style>
-</head>
-<body {% if is_pdf %}class="pdf-mode"{% endif %}>
+  </head>
+  <body {% if is_pdf %}class="pdf-mode" {% endif %}>
     <div class="preview-container {% if is_pdf %}pdf-mode{% endif %}">
-        {% csrf_token %}
+      {% csrf_token %} {% if not is_pdf %}
+      <h1><i class="fas fa-id-badge"></i> Staff ID Card Preview</h1>
+      <p class="preview-subtitle">
+        Review the staff identification card before downloading
+      </p>
+      {% endif %}
 
-        {% if not is_pdf %}
-        <h1><i class="fas fa-id-badge"></i> Staff ID Card Preview</h1>
-        <p class="preview-subtitle">Review the staff identification card before downloading</p>
-        {% endif %}
-
-        <div class="card-display-wrapper">
-            <div class="id-card">
-                <div class="card-header">
-                    <img src="{% static 'images/logo.png' %}" alt="ICT University Logo" class="logo">
-                    <div class="card-title-wrapper">
-                        <div class="card-title">ICT UNIVERSITY</div>
-                        <div class="card-subtitle">STAFF ID CARD</div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="card-info">
-                        <div class="staff-name">{{ staff.full_name }}</div>
-                        <div class="role-badge"><i class="fas fa-briefcase"></i> {{ staff.job_title }}</div>
-                        <div class="card-field"><label>Gender:</label>{{ staff.get_gender_display }}</div>
-                        <div class="card-field"><label>Dept:</label>{{ staff.department }}</div>
-                        {% if staff.phone_number %}
-                        <div class="card-field"><label>Phone:</label>{{ staff.phone_number }}</div>
-                        {% endif %}
-                        {% if staff.date_of_birth %}
-                        <div class="card-field"><label>DOB:</label>{{ staff.date_of_birth|date:"d/m/Y" }}</div>
-                        {% endif %}
-                        {% if staff.issued_year %}
-                        <div class="card-field"><label>Issued:</label>{{ staff.issued_year }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="card-photo-section">
-                        <img src="{{ staff.photo.url }}" alt="Staff Photo" class="student-photo">
-                    </div>
-                </div>
-
-                <div class="card-bottom-section">
-                    <div class="vc-text">ICT-U VICE CHANCELLOR</div>
-                </div>
-
-                <div class="card-footer">✓ Valid Staff ID Card</div>
+      <div class="card-display-wrapper">
+        <div class="id-card">
+          <div class="card-header">
+            <img
+              src="{% static 'images/logo.png' %}"
+              alt="ICT University Logo"
+              class="logo"
+            />
+            <div class="card-title-wrapper">
+              <div class="card-title">ICT UNIVERSITY</div>
+              <div class="card-subtitle">STAFF ID CARD</div>
             </div>
-        </div>
+          </div>
 
-        {% if not is_pdf %}
-        <div class="actions-container">
-            <div class="buttons-row">
-                <a href="{% url 'staff_download_pdf' staff_id=staff.id %}" class="btn btn-primary" id="pdf-btn">
-                    <i class="fas fa-download"></i> Download PDF
-                </a>
-                <a href="{% url 'staff_selection' %}" class="btn btn-secondary">
-                    <i class="fas fa-list"></i> Select &amp; Export
-                </a>
-                <a href="{% url 'register_staff' %}" class="btn btn-success">
-                    <i class="fas fa-plus"></i> Register Another
-                </a>
+          <div class="card-body">
+            <div class="card-info">
+              <div class="staff-name">{{ staff.full_name }}</div>
+              <div class="role-badge">
+                <i class="fas fa-briefcase"></i> {{ staff.job_title }}
+              </div>
+              <div class="card-field">
+                <span class="field-label">Gender:</span>{{
+                staff.get_gender_display }}
+              </div>
+              <div class="card-field">
+                <span class="field-label">Dept:</span>{{ staff.department }}
+              </div>
+              {% if staff.phone_number %}
+              <div class="card-field">
+                <span class="field-label">Phone:</span>{{ staff.phone_number }}
+              </div>
+              {% endif %} {% if staff.issued_year %}
+              <div class="card-field">
+                <span class="field-label">Issued:</span>{{ staff.issued_year }}
+              </div>
+              {% endif %}
             </div>
-        </div>
 
-        <div class="info-section">
-            <h3><i class="fas fa-info-circle"></i> Card Information</h3>
-            <p>
-                This ID card serves as an official identification document for ICT University staff members.
-                It contains essential employment information. Please keep it safe and present it when
-                required for campus access and university services.
-            </p>
+            <div class="card-photo-section">
+              <img
+                src="{{ staff.photo.url }}"
+                alt="Staff Photo"
+                class="student-photo"
+              />
+            </div>
+          </div>
+
+          <div class="card-bottom-section">
+            <div class="vc-text">ICT-U VICE CHANCELLOR</div>
+          </div>
+
+          <div class="card-footer">✓ Valid Staff ID Card</div>
         </div>
-        {% endif %}
+      </div>
+
+      {% if not is_pdf %}
+      <div class="actions-container">
+        <div class="buttons-row">
+          <a
+            href="{% url 'staff_download_pdf' staff_id=staff.id %}"
+            class="btn btn-primary"
+            id="pdf-btn"
+          >
+            <i class="fas fa-download"></i> Download PDF
+          </a>
+          <a href="{% url 'staff_selection' %}" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Select &amp; Export
+          </a>
+          <a href="{% url 'register_staff' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Register Another
+          </a>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h3><i class="fas fa-info-circle"></i> Card Information</h3>
+        <p>
+          This ID card serves as an official identification document for ICT
+          University staff members. It contains essential employment
+          information. Please keep it safe and present it when required for
+          campus access and university services.
+        </p>
+      </div>
+      {% endif %}
     </div>
 
     <div class="spinner-overlay" id="spinner-overlay"></div>
     <div class="loading-spinner" id="loading-spinner">
-        <div class="spinner"></div>
-        <div class="loading-text">Generating PDF...</div>
+      <div class="spinner"></div>
+      <div class="loading-text">Generating PDF...</div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const pdfBtn = document.getElementById('pdf-btn');
-            const overlay = document.getElementById('spinner-overlay');
-            const spinner = document.getElementById('loading-spinner');
-            if (pdfBtn) {
-                pdfBtn.addEventListener('click', function () {
-                    overlay.classList.add('active');
-                    spinner.classList.add('active');
-                    setTimeout(() => {
-                        overlay.classList.remove('active');
-                        spinner.classList.remove('active');
-                    }, 2500);
-                });
-            }
-        });
+      document.addEventListener("DOMContentLoaded", function () {
+        const pdfBtn = document.getElementById("pdf-btn");
+        const overlay = document.getElementById("spinner-overlay");
+        const spinner = document.getElementById("loading-spinner");
+        if (pdfBtn) {
+          pdfBtn.addEventListener("click", function () {
+            overlay.classList.add("active");
+            spinner.classList.add("active");
+            setTimeout(() => {
+              overlay.classList.remove("active");
+              spinner.classList.remove("active");
+            }, 2500);
+          });
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

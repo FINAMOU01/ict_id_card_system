@@ -10,7 +10,7 @@
     <style>
         * { box-sizing: border-box; }
 
-        html, body { margin: 0; padding: 0; font-family: 'Helvetica', sans-serif; background: #fff7ed; }
+        html, body { margin: 0; padding: 0; font-family: 'Poppins', 'Segoe UI', sans-serif; background: #fff7ed; }
         body { padding: 20mm; }
 
         .page-header {
@@ -48,90 +48,105 @@
 
         /* The ID card */
         .id-card {
-            width: 85.6mm; height: 54mm; aspect-ratio: 85 / 54;
+            width: 85.6mm;
+            height: 54mm;
             background: linear-gradient(160deg, #fff7ed 0%, #fffbf5 50%, #fef3c7 100%);
-            border: 2px solid #f97316;
-            border-radius: 18px; padding: 5px;
-            font-family: 'Helvetica', sans-serif;
-            position: relative; display: flex; flex-direction: column;
-            box-shadow: 0 4px 10px rgba(249,115,22,.2);
+            border: 1.5px solid #f97316;
+            border-radius: 3.5mm;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.3);
             overflow: hidden;
-            page-break-inside: avoid; break-inside: avoid;
-            transition: all .3s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+            position: relative;
         }
 
-        .id-card:hover { transform: translateY(-4px); box-shadow: 0 8px 18px rgba(249,115,22,.35); }
+        .id-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 45px rgba(249, 115, 22, 0.4);
+        }
 
         /* Watermark */
         .id-card::after {
             content: '';
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%,-50%);
-            width: 300px; height: 300px;
+            width: 340px; height: 340px;
             background-image: url('{% static "images/logo.png" %}');
             background-size: contain; background-repeat: no-repeat; background-position: center;
             opacity: 0.05; pointer-events: none; z-index: 0;
         }
 
-        /* Header bar pseudo */
-        .id-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 10mm;
-            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
-            border-radius: 14px 14px 0 0; z-index: 2;
-        }
-
         .card-header {
-            display: flex; align-items: center; gap: 5px;
-            padding: 5px 8px 3px; position: relative; z-index: 3;
-            flex-shrink: 0; flex-wrap: nowrap; overflow: hidden;
+            background: linear-gradient(90deg, #c2410c 0%, #ea580c 50%, #f97316 100%);
+            padding: 2mm 3mm;
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+            border-radius: 3.5mm 3.5mm 0 0;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
         }
 
-        .logo { width: 28px; height: 28px; flex-shrink: 0; }
-        .card-title-wrapper { display: flex; flex-direction: column; gap: 1px; flex: 1; }
-        .card-title    { color: white; font-size: 9px; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
-        .card-subtitle { color: #fed7aa; font-size: 6.5px; font-weight: 700; letter-spacing: .2px; white-space: nowrap; }
+        .logo { width: 8mm; height: 8mm; flex-shrink: 0; }
+        .card-title-wrapper { display: flex; flex-direction: column; gap: 0.3mm; }
+        .card-title    { color: #fff; font-size: 3mm; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
+        .card-subtitle { color: #fed7aa; font-size: 2mm; font-weight: 700; letter-spacing: .3px; white-space: nowrap; }
 
         /* Body */
         .card-body {
-            display: grid; grid-template-columns: 1.5fr 1fr; gap: 6px;
+            display: grid; grid-template-columns: 1.6fr 1fr; gap: 2mm;
             flex: 1; position: relative; z-index: 1;
-            padding: 6px 9px; overflow: hidden; min-height: 0;
+            padding: 2mm 2.5mm; overflow: hidden; min-height: 0;
         }
 
-        .card-info { display: flex; flex-direction: column; gap: 1px; font-size: 9px; overflow: hidden; }
+        .card-info { display: flex; flex-direction: column; gap: 0.8mm; font-size: 2mm; overflow: hidden; }
 
-        .staff-name  { font-size: 9.5px; font-weight: 800; color: #c2410c; text-transform: uppercase; line-height: 1.1; }
-        .role-badge-sm {
+        .staff-name  { font-size: 2.5mm; font-weight: 800; color: #c2410c; text-transform: uppercase; line-height: 1.15; }
+        .role-badge {
             display: inline-block;
             background: linear-gradient(135deg, #f97316, #c2410c);
-            color: white; font-size: 6px; font-weight: 700;
-            padding: 1px 7px; border-radius: 10px; margin: 2px 0 1px;
-            text-transform: uppercase; letter-spacing: .3px;
+            color: white;
+            font-size: 1.8mm;
+            font-weight: 700;
+            padding: 0.4mm 2mm;
+            border-radius: 5mm;
+            letter-spacing: 0.3px;
+            margin-bottom: 1mm;
+            text-transform: uppercase;
         }
-        .card-field  { font-size: 8.5px; color: #2d3748; line-height: 1.3; }
-        .field-label { color: #9a3412; font-weight: 700; font-size: 7.5px; text-transform: uppercase; }
+        .card-field { font-size: 2mm; color: #2d3748; line-height: 1.4; }
+        .field-label { color: #9a3412; font-weight: 700; font-size: 1.7mm; text-transform: uppercase; }
 
-        .card-photo-section { display: flex; align-items: flex-start; justify-content: center; }
+        .card-field label {
+            color: #9a3412; font-weight: 700; font-size: 1.8mm;
+            text-transform: uppercase; letter-spacing: .2px; margin-right: 1mm;
+        }
+
+        .card-photo-section { display: flex; flex-direction: column; align-items: center; }
 
         .student-photo {
-            width: 26mm; height: 30mm; object-fit: cover;
-            border: 1.5px solid #f97316; border-radius: 4px;
+            width: 16mm; height: 20mm;
+            object-fit: cover;
+            border: 0.5mm solid #f97316;
+            border-radius: 0.8mm;
         }
 
         .card-bottom-section {
-            display: flex; align-items: center; padding: 0 9px 3px;
+            display: flex; align-items: center; justify-content: flex-start;
+            padding: 1mm 3mm;
             position: relative; z-index: 1;
         }
-        .vc-text { font-size: 6.5px; font-weight: 700; color: #9a3412; text-transform: uppercase; letter-spacing: .4px; }
+        .vc-text { font-size: 1.6mm; font-weight: 700; color: #9a3412; letter-spacing: .3px; text-transform: uppercase; }
 
         .card-footer {
             background: linear-gradient(90deg, #c2410c, #f97316);
-            color: white; font-size: 7px; font-weight: 700;
-            text-align: center; padding: 3px;
-            border-radius: 0 0 14px 14px; flex-shrink: 0; letter-spacing: .3px;
+            color: white; font-size: 1.8mm; font-weight: 700;
+            text-align: center; padding: 1mm;
+            border-radius: 0 0 3.5mm 3.5mm; flex-shrink: 0; letter-spacing: .3px;
         }
-
         /* Checkbox overlay */
         .card-select-checkbox {
             position: absolute; top: 12mm; right: 4px; z-index: 10;
@@ -189,7 +204,7 @@
                 <div class="card-body">
                     <div class="card-info">
                         <div class="staff-name">{{ member.full_name }}</div>
-                        <span class="role-badge-sm">{{ member.job_title }}</span>
+                        <div class="role-badge"><i class="fas fa-briefcase"></i> {{ member.job_title }}</div>
                         <div class="card-field"><span class="field-label">Dept:</span> {{ member.department }}</div>
                         <div class="card-field"><span class="field-label">Gender:</span> {{ member.get_gender_display }}</div>
                         {% if member.phone_number %}
@@ -206,7 +221,7 @@
                 <div class="card-bottom-section">
                     <div class="vc-text">ICT-U VICE CHANCELLOR</div>
                 </div>
-                <div class="card-footer">✓ Valid Staff ID</div>
+                <div class="card-footer">✓ Valid Staff ID Card</div>
             </div>
             {% endfor %}
         </div>
@@ -241,14 +256,11 @@
             <div class="card-body">
                 <div class="card-info">
                     <div class="staff-name">{{ member.full_name }}</div>
-                    <span class="role-badge-sm">{{ member.job_title }}</span>
+                    <div class="role-badge"><i class="fas fa-briefcase"></i> {{ member.job_title }}</div>
                     <div class="card-field"><span class="field-label">Dept:</span> {{ member.department }}</div>
                     <div class="card-field"><span class="field-label">Gender:</span> {{ member.get_gender_display }}</div>
                     {% if member.phone_number %}
                     <div class="card-field"><span class="field-label">Phone:</span> {{ member.phone_number }}</div>
-                    {% endif %}
-                    {% if member.date_of_birth %}
-                    <div class="card-field"><span class="field-label">DOB:</span> {{ member.date_of_birth|date:"d/m/Y" }}</div>
                     {% endif %}
                     {% if member.issued_year %}
                     <div class="card-field"><span class="field-label">Issued:</span> {{ member.issued_year }}</div>
@@ -261,7 +273,7 @@
             <div class="card-bottom-section">
                 <div class="vc-text">ICT-U VICE CHANCELLOR</div>
             </div>
-            <div class="card-footer">✓ Valid Staff ID</div>
+            <div class="card-footer">✓ Valid Staff ID Card</div>
         </div>
         {% endfor %}
     </div>

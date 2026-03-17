@@ -249,7 +249,6 @@ def register_staff(request):
         job_title = request.POST.get('job_title')
         department = request.POST.get('department')
         phone_number = request.POST.get('phone_number')
-        date_of_birth = request.POST.get('date_of_birth')
         photo = request.FILES.get('photo')
 
         staff = Staff.objects.create(
@@ -258,7 +257,6 @@ def register_staff(request):
             job_title=job_title,
             department=department,
             phone_number=phone_number,
-            date_of_birth=date_of_birth,
             issued_year=2026,
             photo=photo,
         )
